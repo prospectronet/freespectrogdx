@@ -125,7 +125,7 @@ class ScreenResources extends GraphicResourceBase {
     val generator = new FreeTypeFontGenerator(Gdx.files.internal(c getString "name"))
     val parameter = new FreeTypeFontParameter()
     val fontChars = if (I18n.isRussian) {
-      "абвгдежзийклмнопрстуфхцчшщъыьэюяabcdefghijklmnopqrstuvwxyzАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789][_!$%#@|\\/?-+=()*&.;:,{}\"´`'<>"
+      "абвгдеёжзийклмнопрстуфхцчшщъыьэюяabcdefghijklmnopqrstuvwxyzАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789][_!$%#@|\\/?-+=()*&.;:,{}\"´`'<>"
     } else {
       FreeTypeFontGenerator.DEFAULT_CHARS
     }

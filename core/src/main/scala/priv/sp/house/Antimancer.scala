@@ -8,36 +8,44 @@ import priv.util.FuncDecorators
 
 object Antimancer {
 
-  val angryMob = new Creature("Angry Mob", Attack(3), 9)
+  val angryMob = new Creature("antimancer.0.name", Attack(3), 9)
 
-  val retaliator = new Creature("Antimancer.Retaliator.name", Attack(5), 10, I18n("Antimancer.Retaliator.description"),
+  val retaliator = new Creature("antimancer.4.name", Attack(5), 10,
+    I18n("antimancer.4.description"),
     reaction = new RetaliatorReaction)
 
-  val bombardier = new Creature("Antimancer.Bombardier.name", Attack(5), 34, I18n("Antimancer.Bombardier.description"),
+  val bombardier = new Creature("antimancer.8.name", Attack(5), 34,
+    I18n("antimancer.8.description"),
     reaction = new BombardierReaction)
 
-  val Antimancer: House = House("Antimancer", List(
+  val Antimancer: House = House("antimancer", List(
 
-    new Creature("Antimancer.MirrorPriest.name", Attack(2), 12, I18n("Antimancer.MirrorPriest.description"),
+    new Creature("antimancer.2.name", Attack(2), 12,
+      I18n("antimancer.2.description"),
       reaction = new MirrorPriestReaction),
 
-    Spell("Antimancer.Resistance.name", I18n("Antimancer.Resistance.description"),
+    Spell("antimancer.3.name", 
+	  I18n("antimancer.3.description"),
       effects = effects(Direct -> resist)),
 
     retaliator,
 
-    new Creature("Antimancer.Martyr.name", Attack(4), 17, I18n("Antimancer.Martyr.description"),
+    new Creature("antimancer.5.name", Attack(4), 17,
+      I18n("antimancer.5.description"),
       reaction = new MartyrReaction),
 
-    new Creature("Antimancer.Harvester.name", Attack(7), 37, I18n("Antimancer.Harvester.description"),
+    new Creature("antimancer.6.name", Attack(7), 37,
+      I18n("antimancer.6.description"),
       reaction = new HarvesterReaction),
 
-    new Creature("Antimancer.VoodooDoll.name", Attack(8), 39, I18n("Antimancer.VoodooDoll.description"),
+    new Creature("antimancer.7.name", Attack(8), 39,
+      I18n("antimancer.7.description"),
       effects = effects(OnTurn -> voodoo)),
 
     bombardier,
 
-    Spell("Antimancer.Bribery.name",  I18n("Antimancer.Bribery.description"),
+    Spell("antimancer.9.name", 
+	  I18n("antimancer.9.description"),
       inputSpec = Some(SelectTarget(cost7OrInf)),
       effects = effects(Direct -> bribe))
   ),

@@ -13,21 +13,35 @@ import priv.util.FuncDecorators
  */
 object MasterOfWind {
 
-  val spirit = new Creature("The spirit of thunderstorm", Attack(2), 28, "gives 1 special mana per turn.\nDeals 3 damage to all enemies when owner skips turn.", reaction = new SpiritThunderReaction, effects = effects(OnTurn -> addMana(1, 4)))
+  val spirit = new Creature("wind.TheSpiritOfThunderstorm.name", Attack(2), 28, 
+	I18n("wind.TheSpiritOfThunderstorm.description"),
+	reaction = new SpiritThunderReaction, effects = effects(OnTurn -> addMana(1, 4)))
 
-  val Wind: House = House("Wind", List(
-    new Creature("Winged Warrior", Attack(4), 9, "next creature summoned will attack on the same turn as summoned.", effects = effects(Direct -> winge)),
-    Spell("Simoom", "Stuns target elemental creature, gives X mana\nX = half of cost of that creature (it will be rounded down).",
-      inputSpec = Some(SelectTarget(nonSpecial)),
-      effects = effects(Direct -> simoom)),
-    Spell("Ball Lightning", "Deals to opponent 7 damage, allows to use additional card this turn.", effects = effects(Direct -> ballLightning)),
-    Spell("Squall", "Deals 1 damage to opponent and all his creatures.\nAllows to use two additional cards this turn.", effects = effects(Direct -> squall)),
-    Spell("Energetic vortex", "increases damage dealt by next owner spell by 50% and transfer 2 air mana from opponent to owner.", effects = effects(Direct -> vortex)),
+  val Wind: House = House("wind", List(
+    new Creature("wind.WingedWarrior.name", Attack(4), 9, 
+		I18n("wind.WingedWarrior.description"),
+		effects = effects(Direct -> winge)),
+    Spell("wind.Simoom.name", 
+		I18n("wind.Simoom.description"),
+		inputSpec = Some(SelectTarget(nonSpecial)),
+		effects = effects(Direct -> simoom)),
+    Spell("wind.BallLightning.name", 
+		I18n("wind.BallLightning.description"),
+		effects = effects(Direct -> ballLightning)),
+    Spell("wind.Squall.name", 
+		I18n("wind.Squall.description"),
+		effects = effects(Direct -> squall)),
+    Spell("wind.EnergeticVortex.name", 
+		I18n("wind.EnergeticVortex.description"),
+		effects = effects(Direct -> vortex)),
     spirit,
-    Spell("Whirlwind", "destroys the target creature and opposite one,\nallows to use additional card this turn.",
-      inputSpec = Some(SelectOwnerCreature),
-      effects(Direct -> whirlwind)),
-    Spell("Eternal Storm", "this turn all friendly creatures attack directly opponent.", effects = effects(Direct -> storm))),
+    Spell("wind.Whirlwind.name", 
+		I18n("wind.Whirlwind.description"),
+		inputSpec = Some(SelectOwnerCreature),
+		effects(Direct -> whirlwind)),
+    Spell("wind.EternalStorm.name", 
+		I18n("wind.EternalStorm.description"),
+		effects = effects(Direct -> storm))),
     eventListener = Some(new CustomListener(new WindEventListener)),
     data = WindState())
 

@@ -9,53 +9,48 @@ import priv.util.FuncDecorators
 object Colors {
 
   // /!\ direct effect should use player data because slot data is not set yet
-  val violet = new Creature("Violet", AttackSources(), 29,
-    "permanently reduces cost of owner's cards with cost 2X and lower by 1." +
-      "Damage dealt by enemy's spells is reduced by 3 while Violet stays on the board.",
-  effects = effects(Direct -> violetEffect),
-  reaction = new VioletReaction)
+  val violet = new Creature("colors.Violet.name", AttackSources(), 29,
+    I18n("colors.Violet.description"),
+	effects = effects(Direct -> violetEffect),
+	reaction = new VioletReaction)
 
-  val azure = new Creature("Azure", AttackSources(), 24,
-    "While Azure stays on the board, owner's creatures with cost X, X +1, X-1 receive no damage from spells and " +
-      "creatures' abilities but receive 4 damage each turn.",
+  val azure = new Creature("colors.Azure.name", AttackSources(), 24,
+    I18n("colors.Azure.description"),
     effects = effects(OnTurn -> azureEffect),
     reaction = new AzureReaction)
 
-  val Colors: House = House("Colors", List(
-    Spell("Discoloration", "Destroys selected owner's color, gives one additional action.",
+  val Colors: House = House("colors", List(
+    Spell("colors.Discoloration.name", 
+	  I18n("colors.Discoloration.description"),
       inputSpec = Some(SelectOwner(selectColour)),
       effects = effects(Direct -> discolor)),
 
-    new Creature("Amber", AttackSources(), 21,
-      "when killed, distributes 2X mana between two highest owner's powers equally.",
+    new Creature("colors.Amber.name", AttackSources(), 21,
+      I18n("colors.Amber.description"),
       reaction = new AmberReaction),
 
     violet,
 
     azure,
 
-    new Creature("Silver", AttackSources(), 33,
-      "heals to owner's creatures X-1 life each turn. Reduces growth of Colors' power by 1 if X = 6 or more.",
+    new Creature("colors.Silver.name", AttackSources(), 33,
+      I18n("colors.Silver.description"),
       effects = effects(OnTurn -> silver)),
 
-    new Creature("Gold", Attack(0), 35,
-      "dies instead of creature killed on the left; this creature reborns with 4X lives.\n" +
-        "After reborn attack of opponent's creatures permanently increases by 1.",
+    new Creature("colors.Gold.name", Attack(0), 35,
+      I18n("colors.Gold.description"),
       reaction = new GoldReaction),
 
-    new Creature("Emerald", AttackSources(), 16,
-      "Reduces damage dealt to owner by X-3. Cost of all Color's cards is increased by X while Emerald stays on the board.",
+    new Creature("colors.Emerald.name", AttackSources(), 16,
+      I18n("colors.Emerald.description"),
       reaction = new EmeraldReaction),
 
-    new Creature("Crimson", AttackSources(), 34,
-      "Increases damage dealt to both players by creatures by X." +
-        "(not including creature abilities or multi target attacks)",
+    new Creature("colors.Crimson.name", AttackSources(), 34,
+      I18n("colors.Crimson.description"),
       reaction = new CrimsonReaction)),
 
   eventListener = Some(new CustomListener(new ColorListener)),
-  description = "Each color has a minimal cost; an amount of mana (X) equal or greater than minimum value can be «invested» in it" +
-    "(all special mana will be spent on color anyway). " +
-    "Amount of mana affects abilities of colors. Only one color of each type can be presented on the board.")
+  description =  I18n("colors.description"))
 
   Colors.initCards(Map(0 -> 0, 1 -> 1, 2 -> 2, 3 -> 2, 4 -> 3, 5 -> 4, 6 -> 4, 7 -> 4))
 

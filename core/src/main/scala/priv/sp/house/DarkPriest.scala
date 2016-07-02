@@ -7,24 +7,47 @@ object DarkPriest {
   import CardSpec._
   import GameCardEffect._
 
-  val restlessSoul = new Creature("darkpriest.restless.name", Attack(3), 11, I18n(""), reaction = new RestlessReaction)
-  val shadowPriest = new Creature("shadow of priest", Attack(3), 13, "Every turn heals 1 life to dark priest and all his creatures.", effects = effects(OnTurn -> shadowHeal))
-  val heretic = new Creature("heretic", Attack(6), 20, "")
-  val blackAngel = new Creature("black angel", Attack(8), 25, "When kills creature, completely heals itself", runAttack = new BlackAngelAttack)
+  val restlessSoul = new Creature("darkpriest.RestlessSoul.name", Attack(3), 11, 
+	I18n("darkpriest.RestlessSoul.description"), 
+	reaction = new RestlessReaction)
+  val shadowPriest = new Creature("darkpriest.ShadowOfPriest.name", Attack(3), 13, 
+	I18n("darkpriest.ShadowOfPriest.description"), 
+	effects = effects(OnTurn -> shadowHeal))
+  val heretic = new Creature("darkpriest.Heretic.name", Attack(6), 20, "")
+  val blackAngel = new Creature("darkpriest.BlackAngel.name", Attack(8), 25, 
+	I18n("darkpriest.BlackAngel.description"), 
+	runAttack = new BlackAngelAttack)
 
   val DarkPriest: House = House("darkpriest", List(
-    new Creature("darkpriest.ghost.name", Attack(5), 16, I18n("darkpriest.ghost.description"), reaction = new GhostReaction, effects = effects(Direct -> ghostHeal)),
-    new Creature("darkpriest.occultist.name", Attack(4), 20, I18n("darkpriest.occultist.description"), effects = effects(Direct -> occult)),
-    Spell("darkpriest.blackmass.name", (state : GameState, playerId : PlayerId) =>
-      I18n("darkpriest.blackmass.description") +" ["+ getBlackMassX(state.players(other(playerId)).slots)+ "]",
+    new Creature("darkpriest.Ghost.name", Attack(5), 16, 
+		I18n("darkpriest.Ghost.description"), 
+		reaction = new GhostReaction, effects = effects(Direct -> ghostHeal)),
+    new Creature("darkpriest.Occultist.name", Attack(4), 20,   			
+		I18n("darkpriest.Occultist.description"), 
+		effects = effects(Direct -> occult)),
+    Spell("darkpriest.BlackMass.name", (state : GameState, playerId : PlayerId) =>
+		I18n("darkpriest.BlackMass.description") 
+		+ " [" + getBlackMassX(state.players(other(playerId)).slots)+ "]"
+      ,
       inputSpec = Some(SelectOwnerCreature),
       effects = effects(Direct -> blackMass)),
-    new Creature("darkpriest.energyvampire.name", Attack(3), 23, I18n("darkpriest.energyvampire.description"), effects = effects(OnTurn -> evampire)),
-    new Creature("darkpriest.blackmonk.name", Attack(4), 25, I18n("darkpriest.blackmonk.description"), reaction = new BlackMonkReaction),
-    new Creature("darkpriest.betrayer.name", Attack(7), 38, I18n("darkpriest.betrayer.description"), inputSpec = Some(SelectTargetCreature), effects = effects(OnTurn -> betray)),
-    new Creature("darkpriest.darkhydra.name", Attack(1), 32, I18n("darkpriest.darkhydra.description"), runAttack = new DarkHydraAttack),
-    new Creature("darkpriest.missionary.name", Attack(3), 36, I18n("darkpriest.missionary.description"), effects = effects(Direct -> missionar), reaction = new MissionaryReaction)),
-    effects = List(OnStart -> initRestless))
+    new Creature("darkpriest.EnergyVampire.name", Attack(3), 23, 
+		I18n("darkpriest.EnergyVampire.description"), 
+		effects = effects(OnTurn -> evampire)),
+    new Creature("darkpriest.BlackMonk.name", Attack(4), 25, 
+		I18n("darkpriest.BlackMonk.description"), 
+		reaction = new BlackMonkReaction),
+    new Creature("darkpriest.Betrayer.name", Attack(7), 38, 
+		I18n("darkpriest.Betrayer.description"), 
+		inputSpec = Some(SelectTargetCreature), effects = effects(OnTurn -> betray)),
+    new Creature("darkpriest.DarkHydra.name", Attack(1), 32, 
+		I18n("darkpriest.DarkHydra.description"), 
+		runAttack = new DarkHydraAttack),
+    new Creature("darkpriest.Missionary.name", Attack(3), 36, 
+		I18n("darkpriest.Missionary.description"), 
+		effects = effects(Direct -> missionar), reaction = new MissionaryReaction)),
+    effects = List(OnStart -> initRestless),
+	description =  I18n("darkpriest.description"))
 
   val ghost = DarkPriest.cards(0).asCreature
   DarkPriest initCards Houses.basicCostFunc

@@ -12,25 +12,41 @@ import priv.util.FuncDecorators
  */
 class MountainKing {
 
-  val soldier = new Creature("Dwarven soldier", Attack(3), 12, "On entering the game increases attack of neighbors by 3 for 1 turn.\nHird: decreases attack of opposite creature by 1 for each\ndwarven soldier on the board.", effects = effects(Direct -> soldierEffect), reaction = new SoldierReaction)
-  val shieldman = new Creature("Dwarven shieldman", Attack(3), 15, "Redirects to himself half of the damage dealt to neighbors.\nHird: cannot be killed with magic (at least 1 hp will be left).", reaction = new ShieldmanReaction)
-  val runesmith = new Creature("Runesmith", AttackSources(Some(6), Vector(RuneAttackSource)), 24, "Runesmith can only be harmed by opposite creature if blocked.\nHird: +1 attack for each dwarf in the game (including himself).", reaction = new RuneReaction)
-  val ballista = new Creature("Ballista", Attack(6), 40, "When enemy creature enters the game, halves its health and loses 10 health itself.\nHird: loses only 7 health on activating ability.", reaction = new BallistaReaction)
-  val berserker = new Creature("Berserker", AttackSources(Some(6), Vector(BerserkerAttackSource)), 40, "When owner receives more than 4 damage attacks instantly opposite slot.\nHird: +3 attack and damage dealt to berserker.", reaction = new BerserkerReaction)
-  val mountainKing = new Creature("Mountain king", Attack(4), 45, "When allied dwarf enters the game, heals himself by 4 and permanently increases his attack by 2.\nWhen enters the game stuns strongest opponent creature.\nHird: reduces cost of dwarven cards by 1.", effects = effects(Direct -> moutain), reaction = new MountainReaction)
-  val armourClad = new Creature("Armour-clad Dwarf", Attack(5), 23, "Reduces non-magical damage dealt to him by X\n(X = difference in level with opposite creature).\nHird: his ability applies to neighbors as well.", reaction = new ArmourReaction)
+  val soldier = new Creature("mountainking.DwarvenSoldier.name", Attack(3), 12, 
+	I18n("mountainking.DwarvenSoldier.description"), 
+	effects = effects(Direct -> soldierEffect), reaction = new SoldierReaction)
+  val shieldman = new Creature("mountainking.DwarvenShieldman.name", Attack(3), 15, 
+	I18n("mountainking.DwarvenShieldman.description"), 
+	reaction = new ShieldmanReaction)
+  val runesmith = new Creature("mountainking.Runesmith.name", AttackSources(Some(6), Vector(RuneAttackSource)), 24, 
+	I18n("mountainking.Runesmith.description"), 
+	reaction = new RuneReaction)
+  val ballista = new Creature("mountainking.Ballista.name", Attack(6), 40, 
+	I18n("mountainking.Ballista.description"), 
+	reaction = new BallistaReaction)
+  val berserker = new Creature("mountainking.Berserker.name", AttackSources(Some(6), Vector(BerserkerAttackSource)), 40, 
+	I18n("mountainking.Berserker.description"), 
+	reaction = new BerserkerReaction)
+  val mountainKing = new Creature("mountainking.MountainKingCard.name", Attack(4), 45, 
+		I18n("mountainking.MountainKingCard.description"), 
+	effects = effects(Direct -> moutain), reaction = new MountainReaction)
+  val armourClad = new Creature("mountainking.ArmourcladDwarf.name", Attack(5), 23, 
+	I18n("mountainking.ArmourcladDwarf.description"), 
+	reaction = new ArmourReaction)
 
-  val MountainKing = House("Mountain King", List(
+  val MountainKing = House("mountainking", List(
     soldier,
     shieldman,
-    new Creature("Dwarven crossbowman", Attack(3), 20, "When attacks deals the same damage directly to opponent.\nHird: attacks instantly right before death.", runAttack = new CrossbowAttack, reaction = new CrossbowReaction),
+    new Creature("mountainking.DwarvenСrossbowman.name", Attack(3), 20, 
+		I18n("mountainking.DwarvenСrossbowman.description"), 
+		runAttack = new CrossbowAttack, reaction = new CrossbowReaction),
     armourClad,
     runesmith,
     ballista,
     berserker,
     mountainKing),
     eventListener = Some(new CustomListener(new MKEventListener)),
-    description = "Hird:\nWhile dwarf stands side by side with other dwarf, he gets second ability")
+    description = I18n("mountainking.description"))
 
   MountainKing initCards Houses.basicCostFunc
 

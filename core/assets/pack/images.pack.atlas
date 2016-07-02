@@ -1479,28 +1479,28 @@ cards/darkpriest/Occultist
   orig: 80, 80
   offset: 0, 0
   index: -1
-cards/darkpriest/black angel
+cards/darkpriest/Black Angel
   rotate: false
   xy: 673, 25
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
-cards/darkpriest/heretic
+cards/darkpriest/Heretic
   rotate: false
   xy: 755, 25
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
-cards/darkpriest/restless soul
+cards/darkpriest/Restless soul
   rotate: false
   xy: 837, 25
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
-cards/darkpriest/shadow of priest
+cards/darkpriest/Shadow of Priest
   rotate: false
   xy: 919, 25
   size: 80, 80
