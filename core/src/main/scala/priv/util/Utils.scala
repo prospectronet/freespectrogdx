@@ -1,6 +1,10 @@
 package priv.util
 
 import java.io._
+import java.net.URL
+import java.nio.channels.Channels
+import java.security.MessageDigest
+import java.util.zip.ZipInputStream
 
 import com.badlogic.gdx.Gdx
 
@@ -12,6 +16,62 @@ object Utils {
     { k : A =>
       m.getOrElseUpdate(k, f(k))
     }
+  }
+
+  def getChecksum() : String = {
+    val currentJavaJarFile = new File(this.getClass.getProtectionDomain().getCodeSource().getLocation().getPath())
+    val filepath = currentJavaJarFile.getAbsolutePath()
+    try {
+      val md = MessageDigest.getInstance("SHA-256")
+      val fis = new FileInputStream(filepath)
+      val dataBytes = new Array[Byte](1024)
+      var n = fis read dataBytes
+
+      while ( n != -1 ) {
+        md.update(dataBytes, 0, n)
+        n = fis read dataBytes
+      }
+
+      new String(md.digest())
+    } catch { case e : Exception =>
+      e.printStackTrace()
+      "0"
+    }
+  }
+
+  def download(url : URL, name : String, target : String): Unit = {
+    val channel = Channels.newChannel(url.openStream())
+    val out = new FileOutputStream(target)
+    out.getChannel().transferFrom(channel, 0, Long.MaxValue)
+  }
+
+  val BUFFER = 2048
+  def unzip(file : String, targetDir : String): Unit = {
+    val fis = new FileInputStream(file)
+    val zis = new ZipInputStream(new BufferedInputStream(fis))
+    var entry = zis.getNextEntry
+    while(entry != null) {
+      var data = new Array[Byte](BUFFER)
+      val target = new File(targetDir + File.separator + entry.getName())
+      if (entry.getName().endsWith("/")) {
+        target.mkdirs()
+      } else {
+        if (! target.getParentFile.exists()) {
+          target.getParentFile.mkdirs()
+        }
+        val fos = new FileOutputStream(target)
+        val dest = new BufferedOutputStream(fos, BUFFER)
+        var count = zis.read(data, 0, BUFFER)
+        while (count != -1) {
+          dest.write(data, 0, count)
+          count = zis.read(data, 0, BUFFER)
+        }
+        dest.flush()
+        dest.close()
+      }
+      entry = zis.getNextEntry
+    }
+    zis.close()
   }
 
   def toBytes(o: AnyRef) = {

@@ -19,6 +19,7 @@ class NetPanel(
   val chat = new TextField("" , skin)
   val nbRows = 20
   logs setPrefRows nbRows
+  logs setDisabled true
 
   val playerList = new UiList[PlayerInfo](skin)
 
@@ -55,21 +56,23 @@ class NetPanel(
   chat setTextFieldListener new TextFieldListener {
     override def keyTyped(textField: TextField, c: Char) : Unit = {
       if (c == '\r' || c == '\n') {
-        screenResources.clientOption foreach { client =>
-          val text = chat.getText
-          if (text.startsWith("/duel ")) {
-            val name = text.replace("/duel ", "")
+        screenResources.clientOption match {
+          case None => logText("Not connected")
+          case Some(client) =>
+            val text = chat.getText
+            if (text.startsWith("/duel ")) {
+              val name = text.replace("/duel ", "")
 
-            logText("Requesting a duel to " + name + "...")
-            playerList.getItems.toArray().find(_.name == name && client.user != name) match {
-              case None => logText(name + " not found")
-              case Some(p) =>
-                client send Message(Header(MessageType.RequestDuel), Some(p.id.getBytes))
+              logText("Requesting a duel to " + name + "...")
+              playerList.getItems.toArray().find(_.name == name && client.user != name) match {
+                case None => logText(name + " not found")
+                case Some(p) =>
+                  client send Message(Header(MessageType.RequestDuel), Some(p.id.getBytes))
+              }
+            } else {
+              client proxyMessage ChatMessage(client.user + ": " + text)
             }
-          } else {
-            client proxyMessage ChatMessage(client.user + ": " + text)
-          }
-          chat setText ""
+            chat setText ""
         }
       }
     }

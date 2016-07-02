@@ -115,3 +115,21 @@ mountainking.Berserker.name;Berserker;Берсеркер
 mountainking.Berserker.description;When owner receives more than 5 damage attacks out-of-turn opposite slot. Hird: +3  attack and damage dealt to berserker.;Когда хозяин получает больше 5 урона, проводит внеочередную атаку по противостоящему слоту. Хирд: +3 к атаке и +3 к урону ото всех атак.
 mountainking.MountainKingCard.name;Mountain king;Гномий король
 mountainking.MountainKingCard.description;When allied dwarf enters the game, heals himself by 6 and permanently increases his attack by 2. When enters the game stuns strongest opponent creature. Hird: reduces cost of dwarven cards by 1.;При входе в игру оглушает сильнейшее существо оппонента. Когда в игру призывается гном, лечится на 6 и перманентно повышает свою атаку на 2. Хирд: снижает стоимость всех гномьих карт на 1.
+
+darksider;Darksider;Темный странник
+darksider.fallen.name;Fallen mage;Падший маг
+darksider.fallen.description;when attacks, deals the same damage to all enemy creatures of element of opposite creature.;при атаке наносит такой же урон всем вражеским существам одной с целью стихии
+darksider.spider.name;Wolf spider;Волкопаук
+darksider.spider.description;when opponent summons card, deals to opposite creature damage equal to cost of that card.;когда противник использует карту, наносит противостоящему существу урон, равный ее стоимости
+darksider.knight.name;Black knight;Черный рыцарь
+darksider.knight.description;his neighbors attack only slot opposite to black knight.;соседи рыцаря атакуют только противостоящий ему слот
+darksider.mystic.name;Dark mystic;Темный мистик
+darksider.mystic.description;attack is equal to owner’s special power. When friendly elemental creature dies, increases special power by 1;атака равна спецмане хозяина. При гибели дружественного стихийного существа повышает спецману на 1
+darksider.faceless.name;Faceless horror;Безликий ужас
+darssider.faceless.description;when summoned, opponent loses card of opposite creature.;при входе в игру противник теряет карту противостоящего существа
+darksider.lake.name;Lake of oblivion;Омут забвения
+darksider.lake.description;when opponent summons card, blocks it till the death of lake.;когда противник использует карту, блокирует ее до своей смерти
+darksider.warlock.name;Warlock;Колдун
+darksider.warlock.description;when opponent casts spell, blocks it and loses 3X hp (X - cost of spell).;когда противник использует заклинание, отменяет его и теряет 3Х хп (Х – стоимость заклинания)
+darksider.dragon.name;Black dragon;Черный дракон
+darksider.dragon.description;immune to all spells and abilities. When enters the game, stuns all enemy creatures;иммунен к заклинаниям и способностям существ. При входе в игру оглушает всех вражеских существ

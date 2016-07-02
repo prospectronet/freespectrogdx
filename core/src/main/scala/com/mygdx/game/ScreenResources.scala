@@ -1,5 +1,9 @@
 package com.mygdx.game
 
+import java.io.File
+import java.net.URL
+import java.nio.file.Paths
+
 import com.badlogic.ashley.core.{Engine, Entity}
 import com.badlogic.gdx.graphics.Texture.TextureFilter
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
@@ -16,6 +20,7 @@ import com.mygdx.game.effects._
 import com.mygdx.game.net.NetClient
 import com.typesafe.config.ConfigFactory
 import priv.sp.I18n
+import priv.util.Utils
 
 import scala.concurrent.Promise
 import scala.util.control.NonFatal
@@ -25,6 +30,7 @@ class ScreenResources extends GraphicResourceBase {
   val assetPath = Gdx.files.external(".freespectro")
   val packPath  = Gdx.files.external(".freespectro/pack")
   var config   = ConfigFactory.load()
+  boot()
   val stage    = new Stage()
   val batch    = stage.getBatch
   val renderer = new ShapeRenderer()
@@ -38,6 +44,7 @@ class ScreenResources extends GraphicResourceBase {
   val slotSystem     = new SlotSystem(batch)
   val timedSystem    = new TimedSystem(engine)
   var clientOption   = Option.empty[NetClient]
+  val checksum       = Utils.getChecksum()
 
   engine addSystem scriptSystem
   engine addSystem timedSystem
@@ -47,10 +54,11 @@ class ScreenResources extends GraphicResourceBase {
 
   val shapes = new ShapeRenderer()
 
-  var effectResources = new EffectResources(new Shaders, this)
   val beforeProcess = new BeforeProcess
 
   atlas.getTextures.asScala.foreach(_.setFilter(TextureFilter.Linear, TextureFilter.Linear)) // smooth textures, to fix glitches when card moves and viewport resizing
+
+  val effectResources = new EffectResources(new Shaders, this)
 
   def clear() : Unit = {
     stage.clear()
@@ -74,9 +82,6 @@ class ScreenResources extends GraphicResourceBase {
     try {
       ConfigFactory.invalidateCaches()
       config = loadConfig()
-      val old = effectResources
-      effectResources = new EffectResources(new Shaders, this)
-      old.shaders.dispose()
       skin = loadSkin("font")
       skin2 = loadSkin("font2")
     } catch { case NonFatal(t) => t.printStackTrace() }
@@ -140,6 +145,24 @@ class ScreenResources extends GraphicResourceBase {
     font
   }
 
+  def boot() : Unit = {
+    val p = packPath.file().getCanonicalPath()
+    if (! java.nio.file.Files.exists(Paths.get(p))) {
+      val imagePack = config.getString("imagepack.choice")
+      download(new URL(config.getString("imagepack.backgrounds")), "backgrounds.zip")
+      download(new URL(config.getString("imagepack." + imagePack)), "images.zip")
+    }
+  }
+
+  def download(url : URL, name : String) : Unit = {
+    val targetDownload = assetPath.file().getCanonicalPath + File.separator + name
+    if (! new File(targetDownload).exists()) {
+      assetPath.file().mkdirs()
+      println("Downloading " + url + " to " + targetDownload)
+      Utils.download(url, name, targetDownload)
+    }
+    Utils.unzip(targetDownload, assetPath.file().getCanonicalPath)
+  }
 }
 
 class BeforeProcess {

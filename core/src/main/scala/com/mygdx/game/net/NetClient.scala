@@ -2,8 +2,6 @@ package com.mygdx.game.net
 
 import java.io._
 import java.net._
-import java.security.{MessageDigest, NoSuchAlgorithmException}
-import java.util.Base64
 
 import collection._
 import scala.concurrent.Promise
@@ -30,7 +28,6 @@ class NetClient(host : String, port : Int, val user : String,
   val pending = mutable.HashMap.empty[Int, Promise[Any]]
   val messageQueue = new java.util.concurrent.LinkedBlockingQueue[Any]
   val log     = new Log(this)
-  val checksum = getChecksum()
   def kryo    = GameKryoInstantiator.kryo
 
   var running = true
@@ -66,8 +63,8 @@ class NetClient(host : String, port : Int, val user : String,
         prom.future onComplete {
           case Failure(t) => logMsg(t.getMessage) ; t.printStackTrace()
           case Success(OpponentInfo(oppName, oppHouses, oppChecksum)) =>
-            if (oppChecksum != checksum) {
-              val msg = "Checksum mismatch " + checksum + "/" + oppChecksum
+            if (oppChecksum != screenResources.checksum) {
+              val msg = "Checksum mismatch " + screenResources.checksum + "/" + oppChecksum
               log.error(msg)
               logMsg(msg)
               Thread.sleep(1000)
@@ -106,7 +103,7 @@ class NetClient(host : String, port : Int, val user : String,
                 msg match {
                   case _ : AskOpponentInfo =>
                     proxyMessage(ProxyAnswer(id,
-                      OpponentInfo(user, gameResources.playerChoices(owner).map(_.houseId), checksum)))
+                      OpponentInfo(user, gameResources.playerChoices(owner).map(_.houseId), screenResources.checksum)))
                   case _ => log.debug("unknown msg " + msg)
                 }
             case ProxyAnswer(answerId, msg) =>
@@ -171,27 +168,6 @@ class NetClient(host : String, port : Int, val user : String,
     setPlayerList(Nil)
     messageQueue.clear()
     pending.clear()
-  }
-
-  def getChecksum() : String = {
-    val currentJavaJarFile = new File(this.getClass.getProtectionDomain().getCodeSource().getLocation().getPath())
-    val filepath = currentJavaJarFile.getAbsolutePath()
-    try {
-      val md = MessageDigest.getInstance("SHA-256")
-      val fis = new FileInputStream(filepath)
-      val dataBytes = new Array[Byte](1024)
-      var n = fis read dataBytes
-
-      while ( n != -1 ) {
-        md.update(dataBytes, 0, n)
-        n = fis read dataBytes
-      }
-
-      new String(md.digest())
-    } catch { case e : Exception =>
-      e.printStackTrace()
-      "0"
-    }
   }
 
 }

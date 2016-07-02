@@ -62,7 +62,7 @@ class Background(resources :ScreenResources) {
     } yield file
 
     background.clear()
-    val file = (Random shuffle backgrounds.toList).headOption getOrElse Gdx.files.internal("backgrounds/default.jpg")
+    val file = (Random shuffle backgrounds.toList).headOption getOrElse Gdx.files.external(".freespectro/backgrounds/default.jpg")
     val texture = new Texture(file)
     val image = new Image(texture)
     image setY (800 - image.getHeight)

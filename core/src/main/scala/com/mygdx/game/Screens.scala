@@ -1,16 +1,18 @@
 package com.mygdx.game
 
-import java.nio.file.Paths
-
 import collection.JavaConverters._
 import com.badlogic.gdx.scenes.scene2d.{Actor, Group}
 
 import scala.util.control.NonFatal
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx._
-import com.mygdx.game.gui.{GameSettings, InitDialog, LobbyBoard}
+import com.mygdx.game.gui.{GameSettings, LobbyBoard}
 import priv.sp.GameResources
 import priv.util.GuiUtils._
+
+class PresStartScreen() extends ScreenAdapter {
+
+}
 
 // common resources of the screens
 class Screens(val game : Game) {
@@ -114,14 +116,9 @@ class LobbyScreen(screens : Screens) extends ScreenAdapter {
 
   def select() : Unit = {
     screenResources.clear()
-    screenResources.stage addActor board.panel
     game setScreen this
     initInput(board.panel) { _ => false }
-    val packPath = screenResources.packPath.file().getCanonicalPath()
-    if (! java.nio.file.Files.exists(Paths.get(packPath))) {
-      println(packPath + " doesn't exists")
-      screenResources.stage addActor new InitDialog(screenResources)
-    }
+    screenResources.stage addActor board.panel
   }
 
   override def render (delta : Float): Unit = screens.render(delta)
