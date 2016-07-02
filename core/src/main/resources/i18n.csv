@@ -3,8 +3,8 @@ fire;Fire;Огонь
 water;Water;Вода
 
 air;Air;Воздух
-air.0.name;Faerie novice
-air.0.description;Increase spell damage by 1
+air.fairy.name;Faerie novice
+air.fairy.description;Increase spell damage by 1
 
 
 earth;Earth;Земля

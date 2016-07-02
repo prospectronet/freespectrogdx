@@ -11,7 +11,7 @@ class MyGdxGame extends Game {
 
   override def create() {
     Gdx.app.setLogLevel(Application.LOG_DEBUG)
-    screens.startScreen.select()
+    screens.lobbyScreen.select()
   }
 }
 

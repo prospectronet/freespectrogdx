@@ -1,7 +1,16 @@
 package com.mygdx.game.gui
 
+import java.io._
+import java.net.URL
+import java.nio.channels.Channels
+import java.nio.file.{Files, Paths}
+import java.util.zip.ZipInputStream
+
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.{List => _, _}
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent
 import com.badlogic.gdx.utils.Scaling
 import com.mygdx.game.ScreenResources
 import priv.sp._
@@ -87,6 +96,88 @@ class GameSettings(resources : GameResources, screenResources : ScreenResources)
       case _ =>
     }
     screenResources.renderSystem setProcessing true
+  }
+
+}
+
+class InitDialog(resources : ScreenResources) extends Dialog("Download assets",resources.skin){
+  val assets = resources.assetPath
+  assets.mkdirs()
+
+  var imagePack = "original"
+
+  val selectBox = new SelectBox[String](resources.skin)
+  selectBox.addListener(new ChangeListener() {
+    def changed (event : ChangeEvent , actor:  Actor ) {
+      imagePack = selectBox.getSelected()
+    }
+  })
+  selectBox.setItems("original", "custom")
+  selectBox.setSelected(imagePack)
+  val log = new TextArea("", resources.skin)
+  log.setPrefRows(3)
+  log.setDisabled(true)
+
+  getContentTable.add(column(selectBox, log))
+
+  button("ok", 'ok)
+
+  Dialogs.center(this)
+
+  protected override def result (obj: AnyRef) : Unit = {
+    obj match {
+      case 'ok =>
+        download(new URL(resources.config.getString("imagepack.backgrounds" )), "backgrounds.zip")
+        download(new URL(resources.config.getString("imagepack." + imagePack)), "images.zip")
+      case _ =>
+    }
+  }
+
+  def addLog(message : String) = {
+    log.setText(log.getText + "\n" + message)
+  }
+
+  def download(url : URL, name : String): Unit = {
+    val target = assets.file().getCanonicalPath + File.pathSeparator + name
+    if (! new File(target).exists()) {
+      addLog("Downloading " + url + " to " + target)
+      val channel = Channels.newChannel(url.openStream())
+      println(target + " already exists")
+      val out = new FileOutputStream(target)
+      out.getChannel().transferFrom(channel, 0, Long.MaxValue)
+    }
+    unzip(target)
+  }
+
+  val BUFFER = 2048
+  def unzip(file : String): Unit = {
+    addLog("Unzipping " + file)
+    val fis = new FileInputStream(file)
+    val zis = new ZipInputStream(new BufferedInputStream(fis))
+    var entry = zis.getNextEntry
+    while(entry != null) {
+      addLog("Extracting: " +entry)
+      var data = new Array[Byte](BUFFER)
+      val target = new File(assets.file.getCanonicalPath + File.separator + entry.getName())
+      if (entry.getName().endsWith("/")) {
+        target.mkdirs()
+      } else {
+        if (! target.getParentFile.exists()) {
+          target.getParentFile.mkdirs()
+        }
+        val fos = new FileOutputStream(target)
+        val dest = new BufferedOutputStream(fos, BUFFER)
+        var count = zis.read(data, 0, BUFFER)
+        while (count != -1) {
+          dest.write(data, 0, count)
+          count = zis.read(data, 0, BUFFER)
+        }
+        dest.flush()
+        dest.close()
+      }
+      entry = zis.getNextEntry
+    }
+    zis.close()
   }
 
 }

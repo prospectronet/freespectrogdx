@@ -1,12 +1,14 @@
 package com.mygdx.game
 
+import java.nio.file.Paths
+
 import collection.JavaConverters._
 import com.badlogic.gdx.scenes.scene2d.{Actor, Group}
 
 import scala.util.control.NonFatal
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx._
-import com.mygdx.game.gui.{GameSettings, StartBoard}
+import com.mygdx.game.gui.{GameSettings, InitDialog, LobbyBoard}
 import priv.sp.GameResources
 import priv.util.GuiUtils._
 
@@ -15,7 +17,7 @@ class Screens(val game : Game) {
   val screenResources       = new ScreenResources
   val gameResources         = new GameResources
   var lastE                 = Option.empty[Throwable]
-  val startScreen           = new StartScreen(this)
+  val lobbyScreen           = new LobbyScreen(this)
   val gameScreen            = new GameScreen(this)
 
   import screenResources._
@@ -98,23 +100,28 @@ class Screens(val game : Game) {
   }
 }
 
-class StartScreen(screens : Screens) extends ScreenAdapter {
+class LobbyScreen(screens : Screens) extends ScreenAdapter {
   import screens._
-  val startBoard = new StartBoard(screens)
+  val board = new LobbyBoard(screens)
 
-  startBoard.newGameButton addListener onClick {
+  board.newGameButton addListener onClick {
     gameScreen.select()
     new LocalGameScreenContext(gameScreen)
   }
-  startBoard.settingsButton addListener onClick {
+  board.settingsButton addListener onClick {
     screenResources.stage addActor new GameSettings(gameResources, screenResources)
   }
 
   def select() : Unit = {
     screenResources.clear()
-    screenResources.stage addActor startBoard.panel
+    screenResources.stage addActor board.panel
     game setScreen this
-    initInput(startBoard.panel) { _ => false }
+    initInput(board.panel) { _ => false }
+    val packPath = screenResources.packPath.file().getCanonicalPath()
+    if (! java.nio.file.Files.exists(Paths.get(packPath))) {
+      println(packPath + " doesn't exists")
+      screenResources.stage addActor new InitDialog(screenResources)
+    }
   }
 
   override def render (delta : Float): Unit = screens.render(delta)
@@ -140,7 +147,7 @@ class GameScreen(val screens : Screens) extends ScreenAdapter {
 
   def returnToStart() = {
     resetScreen(())
-    startScreen.select()
+    lobbyScreen.select()
   }
 
   def select() : Unit = {

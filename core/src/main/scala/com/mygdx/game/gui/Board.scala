@@ -57,7 +57,7 @@ class Background(resources :ScreenResources) {
   def setBackground(house  : House) = {
     val backgrounds = for {
       filename  <- exts.map(ext => house.name.toLowerCase + ext)
-      file = Gdx.files.internal("backgrounds/" + filename)
+      file = Gdx.files.external(".freespectro/backgrounds/" + filename)
       if file.exists()
     } yield file
 
