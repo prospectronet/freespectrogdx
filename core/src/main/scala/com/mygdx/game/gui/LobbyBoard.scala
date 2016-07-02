@@ -7,7 +7,7 @@ import priv.util.GuiUtils._
 
 class LobbyBoard(screens : Screens) {
 
-  val title          = new Label("FreeSpectro is inspired by Spectromancer© and made by a couple of fans",screens.screenResources.skin2)
+  val title          = new Label("FreeSpectro is inspired by Spectromancer© (spectromancer.com) and made by a couple of fans",screens.screenResources.skin2)
   val buttonPanel    = new ButtonPanel(screens.screenResources.skin2)
   val newGameButton  = buttonPanel.getButton("Single game")
   val settingsButton = buttonPanel.SettingsButton
