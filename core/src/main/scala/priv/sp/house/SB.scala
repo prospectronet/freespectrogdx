@@ -8,48 +8,33 @@ import priv.util.FuncDecorators
 
 class SB {
 
-  val bounty = new Creature("Bounty hunter", Attack(4), 16,
-    """Deals 2 damage to opposite creature when summoned.
-When kill opposite creature, get 1/3 mana of his cost round up""",
+  val bounty = new Creature("snowblood.hunter", Attack(4), 16,
+    I18n("snowblood.hunter.description"),
     reaction = new BountyHunterReaction,
     effects = effects(Direct -> { env: Env ⇒
       env.focus()
       env.otherPlayer.slots(env.selected) inflict Damage(2, env, isAbility = true)
     }))
-  val deathLetter = new Creature("Death letter", Attack(0), 3, """
-Reduce damage to 1.
-When die deals 15 damage to opposite creature.
-(Can't be healed)""", reaction = new DLReaction)
-  val maiko = new Creature("Maiko", Attack(2), 13,
-    """Decrease by 1 attack of all creatures on board.
-(Replaced by death letter after summoned)""", effects = effects(Direct -> maikoEffect), reaction = new MaikoReaction)
+  val deathLetter = new Creature("snowblood.letter", Attack(0), 3, I18n("snowblood.letter.description"), reaction = new DLReaction)
+  val maiko = new Creature("snowblood.maiko", Attack(2), 13,
+    I18n("snowblood.maiko.description"), effects = effects(Direct -> maikoEffect), reaction = new MaikoReaction)
 
-  val SB = House("Snowblood", List(
-    new Creature("Tracker", Attack(3), 14, "When alive, next summoned creature is invincible one turn.", reaction = new TrackerReaction, data = java.lang.Boolean.FALSE, effects = effects(Direct -> initDataFalse)),
+  val SB = House("snowblood", List(
+    new Creature("snowblood.tracker", Attack(3), 14, I18n("snowblood.tracker.description"), reaction = new TrackerReaction, data = java.lang.Boolean.FALSE, effects = effects(Direct -> initDataFalse)),
     bounty,
     maiko,
-    Spell("Echo",
-      "Each owner creature triggers his 'each turn' && 'direct' effects", effects = effects(Direct -> echo)),
-    new Creature("Kojiro", Attack(5), 27,
-      """Can only be summoned onto an existing creature.
-Kojiro attack the turn he is summoned
-Each turn deals 2 damage to opposite&aligned creatures.""", status = runFlag, effects = effects(OnTurn -> kojiro), inputSpec = Some(SelectOwnerCreature)),
-    new Creature("War guide", Attack(5), 26,
-      """When alive, next summoned creature deals damage equals to his attack to
-opponent creatures.
-Heal 1 life to aligned creatures when a creature is summoned in the pack""",
+    Spell("snowblood.echo",
+      I18n("snowblood.echo.description"), effects = effects(Direct -> echo)),
+    new Creature("snowblood.kojiro", Attack(5), 27,
+      I18n("snowblood.kojiro.description"), status = runFlag, effects = effects(OnTurn -> kojiro), inputSpec = Some(SelectOwnerCreature)),
+    new Creature("snowblood.guide", Attack(5), 26,
+      I18n("snowblood.guide.description"),
       reaction = new GuideReaction,
       data = java.lang.Boolean.FALSE,
       effects = effects(Direct -> initDataFalse)),
-    new Creature("Janus", Attack(6), 25,
-      """each turn drain (1/10maxlife) life from other side of the board
-if there is a symetric creature to heal him by 2
-For each creature drained, give one mana of the creature""", effects = effects(OnTurn -> janus)),
-    new Creature("Amaterasu", Attack(7), 30, """When summoned, and when a creature is summoned apply Amaterasu rules
-if fire deals 4 damage to opposite creature
-if water increase lowest mana by 1
-if air deals 2 damage to opponent
-if earth heal 2 life to owner""", effects = effects(Direct -> amaterasu), reaction = new AmaterasuReaction)),
+    new Creature("snowblood.janus", Attack(6), 25,
+      I18n("snowblood.janus.description"), effects = effects(OnTurn -> janus)),
+    new Creature("snowblood.amaterasu", Attack(7), 30, I18n("snowblood.amaterasu.description"), effects = effects(Direct -> amaterasu), reaction = new AmaterasuReaction)),
     eventListener = Some(new CustomListener(new SBEventListener)))
 
   SB initCards Houses.basicCostFunc

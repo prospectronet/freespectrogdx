@@ -14,26 +14,24 @@ class JunkMage {
   import CardSpec._
   import GameCardEffect._
 
-  private val trash = new Creature("Trash", Attack(2), 11)
-  private val trashCyborg = new Creature("Trash Cyborg", Attack(3), 30, "Fill the board with trash 2/11 and one cyborg.\n" +
-    "Every turn 2 pieces of trash assemble into the cyborg",
+  private val trash = new Creature("junk.trash", Attack(2), 11)
+  private val trashCyborg = new Creature("junk.cyborg", Attack(3), 30, I18n("junk.cyborg.description"),
     effects = effects(Direct -> spawnTrash, OnTurn -> gatherTrash))
-  private val jf = new Creature("Junkyard fortune", Attack(3), 15, "Absorb 4 of first damage done to owner",
+  private val jf = new Creature("junk.fortune", Attack(3), 15, I18n("junk.fortune.description"),
     reaction = new JFReaction, effects = effects(OnEndTurn -> resetProtect), data = java.lang.Boolean.FALSE)
 
-  val Junk: House = House("Junk", List(
-    new Creature("Screamer", AttackSources(Some(2), Vector(ScreamerAttackSource)), 14, "+1 attack for each screamer in play", reaction = new ScreamerReaction),
-    Spell("Poison flower", "Deals 5 damage to owner target creature, his opposite creature,  then the opposite neighbors.\nDeals -1 mana for target and opposite creature.",
+  val Junk: House = House("junk", List(
+    new Creature("junk.screamer", AttackSources(Some(2), Vector(ScreamerAttackSource)), 14, I18n("junk.screamer.description"), reaction = new ScreamerReaction),
+    Spell("junk.poison", I18n("junk.poison.description"),
       inputSpec = Some(SelectOwnerCreature),
       effects = effects(Direct -> poisonFlower)),
     jf,
-    new Creature("Chain controller", Attack(4), 18, "Mirror spawn of adjacent creature of cost <4.\n " +
-      "When adjacent creature of cost <6 die, fill the slot with another weak creature nearby",
+    new Creature("junk.chain", Attack(4), 18, I18n("junk.chain.description"),
       reaction = new ChainControllerReaction),
-    new Creature("Roaming assassin", Attack(6), 27, "At end of turn, if unblocked, move to the closest next unblocked opponent and deals 5 damage to it",
+    new Creature("junk.assassin", Attack(6), 27, I18n("junk.assassin.description"),
       effects = effects(OnEndTurn -> roam)),
-    new Creature("Factory", Attack(4), 29, "Mirror spawn of adjacent creature of cost < 6 (spawn effect applied once), and heals factory by 5", reaction = new FactoryReaction),
-    new Creature("Recycling Bot", Attack(8), 29, "When owner creature die, the creature heals 10 life, and heals 2 life to its owner for each creature lost.", reaction = new RecyclingBotReaction),
+    new Creature("junk.factory", Attack(4), 29, I18n("junk.factory.description"), reaction = new FactoryReaction),
+    new Creature("junk.bot", Attack(8), 29, I18n("junk.bot.description"), reaction = new RecyclingBotReaction),
     trashCyborg), eventListener = Some(new CustomListener(new JunkEventListener)))
 
   trash.cost = 1

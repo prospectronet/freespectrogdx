@@ -11,32 +11,30 @@ import priv.sp.update._
  */
 class ZenMage {
 
-  private val cocoon = new Creature("Cocoon", Attack(0), 13, "If die by damage, it heals 3 life to owner",
+  private val cocoon = new Creature("zen.cocoon", Attack(0), 13, I18n("zen.cocoon.description"),
     reaction = new CocoonReaction)
-  private val eguard = new Creature("Electric guard", Attack(3), 19, "deals 3 damage to creatures damaging owner.",
+  private val eguard = new Creature("zen.guard", Attack(3), 19, I18n("zen.guard.description"),
     reaction = new EGuardReaction)
 
-  val Zen: House = House("Zen", List(
-    new Creature("Elementesist", Attack(3), 12, "Deals damage to opposite card, and to all opposite card of same mana.",
+  val Zen: House = House("zen", List(
+    new Creature("zen.elementesist", Attack(3), 12, I18n("zen.elementesist.description"),
       runAttack = new ElemAttack),
-    new Creature("Redlight", Attack(2), 13, "Attack opposite and adjacent slots.",
+    new Creature("zen.redlight", Attack(2), 13, I18n("zen.redlight.description"),
       runAttack = new RedlightAttack),
-    Spell("Focus", (state : GameState, playerId : PlayerId) =>
-      "Every owner card dedicate 50% of their attack to heal the focused creature. ["+
-        getFocusAmount(state.players(playerId).slots)+"]",
+    Spell("zen.focus", (state : GameState, playerId : PlayerId) =>
+      I18n.bundle.format("zen.focus.description",
+        getFocusAmount(state.players(playerId).slots).toString),
       inputSpec = Some(SelectOwnerCreature),
       effects = effects(Direct -> focusSpell)),
     eguard,
-    new Creature("Dreamer", Attack(6), 24, "When in play spell are summoned with one turn late but with cost -2.",
+    new Creature("zen.dreamer", Attack(6), 24, I18n("zen.dreamer.description"),
       reaction = new DreamerReaction),
-    new Creature("Mimic", Attack(6), 26, "When in play, creature are summoned with one turn late with cost -2.",
+    new Creature("zen.mimic", Attack(6), 26, I18n("zen.mimic.description"),
       reaction = new MimicReaction),
-    new Creature("Spiral of light", Attack(3), 19, "Each turn, heals by his attack and adjacent cards decreasing when farest.\n" +
-      "In the same way, attack opposite creature and adjacent cards.",
+    new Creature("zen.spiral", Attack(3), 19, I18n("zen.spiral.description"),
       effects = effects(OnTurn -> spiral),
       runAttack = new SpiralAttack),
-    new Creature("Zen Fighter", Attack(5), 21, "Increase owner highest mana by 1.\n" +
-      "Zen Fighter receives 50% damage from spells and abilities",
+    new Creature("zen.fighter", Attack(5), 21, I18n("zen.fighter.description"),
       reaction = new ZFReaction,
       effects = effects(OnTurn -> zenEffect))),
     eventListener = Some(new CustomListener(new ZenEventListener)))
