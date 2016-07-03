@@ -10,58 +10,45 @@ object SoulReaper {
 
   val initData = SoulReaperData()
 
-  val damnation = Spell("Damnation", "Target creature and deal 3 damage to it.\n" +
-    "If the creature dies because of this spell increase the number of souls by x \n" +
-    "where x is equal to creatures cost (max. damage 8)",
+  val damnation = Spell("reaper.damnation", I18n("reaper.damnation.description"),
     inputSpec = Some(SelectTargetCreature),
     effects   = effects(Direct -> damn))
 
-  val onSlaught = Spell("Onslaught of souls", "Deal x damage to all opponents creatures where x is equal to the number of souls you have." +
-    "After this spell is used owner does not receive souls for creatures killed by this spell and " +
-    "the number of souls that owner has becomes 0",
+  val onSlaught = Spell("reaper.onslaught", I18n("reaper.onslaught.description"),
     effects   = effects(Direct -> onSlaughtEffect))
 
-  val death = Spell("Death Sentence", "Destroy all creatures on the field.\n" +
-    "For every destroyed creature owner receive 2 souls instead of 1",
+  val death = Spell("reaper.sentence", I18n("reaper.sentence.description"),
     effects = effects(Direct -> deathSentence))
 
-  val SoulReaper: House = House("Soul Reaper", List(
+  val SoulReaper: House = House("reaper", List(
     damnation,
 
-    Spell("Dark Passage", "select 1 target creature. This creature and its neighboring creatures are healed with " +
-      "x life where x is equal to the number of souls you have (max. heal 12 life)",
+    Spell("reaper.passage", I18n("reaper.passage.description"),
       inputSpec = Some(SelectOwnerCreature),
       effects   = effects(Direct -> pass)),
 
-    Spell("Eternal Rage", "select 1 target creature this creature stays active on the field 2 more turns after death",
+    Spell("reaper.rage", I18n("reaper.rage.description"),
       inputSpec = Some(SelectOwnerCreature),
       effects   = effects(Direct -> eternalRage)),
 
     onSlaught,
 
-    Spell("Tribute", "Select 1 target owner creature and destroy it owner gets x life " +
-      "where x is equal with the life of the destroyed creature (max life 36)",
+    Spell("reaper.tribute", I18n("reaper.tribute.description"),
       inputSpec = Some(SelectOwnerCreature),
       effects   = effects(Direct -> tribute)),
 
-    Spell("Furious souls", "Deal x+7 damage to opponent where x is equal to owners number of souls." +
-      "After this spell is used souls number is reduced to 0",
+    Spell("reaper.furious", I18n("reaper.furious.description"),
       effects = effects(Direct -> furious)),
 
     death,
 
-    Spell("Soul Shackles", "Target creature cannot attack and its ability is cancelled. " +
-      "His slot cannot be used until the end of the duel.\n" +
-      "For every turn the trapped creature remains on the field, the owner will get 1 soul.\n" +
-      "If owner summons something in front of that slot after the opponents creature is destroyed, " +
-      "that creature will receive 6 damage every turn",
+    Spell("reaper.shackles", I18n("reaper.shackles.description"),
       inputSpec = Some(SelectTargetCreature),
       effects   = effects(Direct -> shackle))
   ),
   data = initData,
   eventListener = Some(new CustomListener(new SoulReaperListener)),
-  description = "When a creature on the field dies owner gets 1 soul. " +
-    "For every soul that owner has all damage dealt by his special spells is increased by 1 (1 soul=1 damage)")
+  description = I18n("reaper.description"))
 
   SoulReaper initCards Houses.basicCostFunc
 

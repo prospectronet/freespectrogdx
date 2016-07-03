@@ -9,38 +9,34 @@ object LostChurch {
 
   val liberatorLife = 15
 
-  val prisoner = new Creature("Prisoner", Attack(2), 10, "When dying loose 1 mana of the two highest basic houses and earn 1 special mana.", reaction = new PrisonerReaction, runAttack = new PrisonerAttack)
-  val enragedPrisoner = new Creature("Enraged Prisoner", Attack(6), 35, "Immune to spell & ability when liberator is alive.", reaction = new PrisonerReaction, status = runFlag, runAttack = new PrisonerAttack)
-  val windOfOppression = Spell("wind of oppression", "Stun scarecrow's opposite creature and its neighbours. Deals 4 damage to them", effects = effects(Direct -> oppress))
-  val darkMonk = new Creature("Dark monk", Attack(2), 13, "Decrease opponent fire mana by 2 and increase cost of them by 1 when alive.",
+  val prisoner = new Creature("disciples.prisoner", Attack(2), 10, I18n("disciples.prisoner.description"), reaction = new PrisonerReaction, runAttack = new PrisonerAttack)
+  val enragedPrisoner = new Creature("disciples.enraged", Attack(6), 35, I18n("disciples.enraged.description"), reaction = new PrisonerReaction, status = runFlag, runAttack = new PrisonerAttack)
+  val windOfOppression = Spell("disciples.wind", I18n("disciples.wind.description"), effects = effects(Direct -> oppress))
+  val darkMonk = new Creature("disciples.monk", Attack(2), 13, I18n("disciples.monk.description"),
     effects = effects(Direct -> guardFire), reaction = new DarkMonkReaction)
-  val preacher = new Creature("Preacher", Attack(4), 13, "When in play normal cards cost 1 more mana.\nIncrease growth of special mana by 1.\nAdd 1 attack to prisoner",
+  val preacher = new Creature("disciples.preacher", Attack(4), 13, I18n("disciples.preacher.description"),
     effects = effects(OnTurn -> addMana(1, 4)), reaction = new PreacherReaction)
-  val falseProphet: Creature = new Creature("false prophet", Attack(4), 18, "Until his death, normal cards cost 1 more mana.\nGive 2 mana to each basic house.\nTake one mana back when dying",
+  val falseProphet : Creature = new Creature("disciples.prophet", Attack(4), 14, I18n("disciples.prophet.description"),
     reaction = new FalseProphetReaction, effects = effects(Direct -> prophetize))
-  val astralEscape = new Creature("Astral escape", Attack(4), 30, "Damage done to prisoner is redirected to Astral escape. Prisoner attack directly the opponent", reaction = new AstralEscapeReaction)
-  val scarecrow: Creature = new Creature("Scarecrow", Attack(7), 25,
-    """Stuns&Deals 4 damage to opposite creature
-Can switch with prisoner to nearest empty slot""",
+  val astralEscape = new Creature("disciples.escape", Attack(4), 30, I18n("disciples.escape.description"), reaction = new AstralEscapeReaction)
+  val scarecrow : Creature = new Creature("disciples.scarecrow", Attack(7), 25,
+    I18n("disciples.scarecrow.description"),
     effects = effects(Direct -> scare), inputSpec = Some(SelectOwner(openOrPrisoner)), reaction = new ScarecrowReaction)
-  val liberator = new Creature("Liberator", Attack(3), liberatorLife, "Turns prisoner into Enraged prisoner.\n When dying inflict " + liberatorLife + " damage to him.", reaction = new LiberatorReaction, effects = effects(Direct -> focus(deliverPrisoner)))
+  val liberator = new Creature("disciples.liberator", Attack(3), liberatorLife, I18n.bundle.format("disciples.liberator.description", liberatorLife.toString), reaction = new LiberatorReaction, effects = effects(Direct -> focus(deliverPrisoner)))
 
-  val LostChurch = new House("Disciples", List(
-    Spell("Speed drug", "Add +1 attack to owner creatures, deals to them 4 damage.\nEffect disappear when prisoner die.",
+  val LostChurch = new House("disciples", List(
+    Spell("disciples.drug", I18n("disciples.drug.description"),
       effects = effects(Direct -> speedDrug)),
     preacher,
     falseProphet,
     astralEscape,
     scarecrow,
     liberator,
-    new Creature("Falconer", Attack(6), 30, "Each turns deals (slot distance) damage to opponent creatures.", effects = effects(OnTurn -> focus(falcon))),
-    Spell("Madden", "Deals 8 damage to opponent creature \nHeals by 3 for each creature killed and add everyone 1 attack.", effects = effects(Direct -> madden))),
+    new Creature("disciples.falconer", Attack(6), 30, I18n("disciples.falconer.description"), effects = effects(OnTurn -> focus(falcon))),
+    Spell("disciples.madden", I18n("disciples.madden.description"), effects = effects(Direct -> madden))),
     effects = List(OnEndTurn -> spawnPrisoner, OnTurn -> weaken),
     eventListener = Some(new CustomListener(new LCEventListener)),
-    description =
-      "Prisoner 2/10 spawn at the end of owner's turn in random empty owner slot.\n"  +
-        "When prisoner die, owner loose 1 mana of 2 highest basic houses and\nearn one special mana.\n" +
-        "When a disciple is low on life(<half), his belief is weakened, and he loose 1/3 attack.")
+    description = I18n("disciples.description"))
 
   LostChurch initCards Houses.basicCostFunc
   LostChurch.addAdditionalCards(prisoner, enragedPrisoner, windOfOppression, darkMonk)

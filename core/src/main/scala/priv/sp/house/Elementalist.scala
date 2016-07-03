@@ -7,37 +7,34 @@ class Elementalist {
   import CardSpec._
   import GameCardEffect._
 
-  val stoneGolem = new Creature("Stone golem", AttackSources(Some(7), Vector(StoneGolemAttackSource)), 30, "+4 attack when blocked.\nReceives no damage from spells and creatures abilities when unblocked.",
+  val stoneGolem = new Creature("elementalist.golem", AttackSources(Some(7), Vector(StoneGolemAttackSource)), 30, I18n("elementalist.golem.description"),
     reaction = new SGReaction)
 
-  val Elementalist = House("Elementalist", List(
+  val Elementalist = House("elementalist", List(
 
-    new Creature("Sylph", Attack(5), 15, "When enters the game, allows to play additional special card.\n+1 cost for each sylph on the board.",
+    new Creature("elementalist.sylph", Attack(5), 15, I18n("elementalist.sylph.description"),
       reaction = new SylphReaction, effects = effects(Direct -> sylphEffect)),
 
-    Spell("Deep freeze", "Both players skip 1 turn and cannot use special cards in their next turn.",
+    Spell("elementalist.freeze", I18n("elementalist.freeze.description"),
       effects = effects(Direct -> freeze)),
 
-    new Creature("Salamander", Attack(6), 14, "If owner fire power is higher than opponent fire power, " +
-      "deals to opponent 4 damage at the beginning of the turn.", effects = effects(OnTurn -> salamand)),
+    new Creature("elementalist.salamander", Attack(6), 14, I18n("elementalist.salamander.description"), effects = effects(OnTurn -> salamand)),
 
-    Spell("Avalanche", (state : GameState, playerId : PlayerId) =>
-      "Deals 2X damage to enemy creatures (X = owner earth power)["+(2 * state.players(playerId).houses(3).mana)+"], " +
-        "heals 2X life to owner and reduces owner earth power to 0.",
+    Spell("elementalist.avalanche", (state : GameState, playerId : PlayerId) =>
+      I18n.bundle.format("elementalist.avalanche.description", (2 * state.players(playerId).houses(3).mana).toString),
       effects = effects(Direct -> aval)),
 
-    Spell("Incineration", "Destroys strongest enemy and weakest friendly creatures (calculated by health) both on board and in deck.",
+    Spell("elementalist.incineration", I18n("elementalist.incineration.description"),
       effects = effects(Direct -> incinerate)),
 
-    new Creature("ArchPhoenix", Attack(9), 20, "Heals to itself X hp (X = owner fire power) every turn.",
+    new Creature("elementalist.phoenix", Attack(9), 20, I18n("elementalist.phoenix.description"),
       effects = effects(OnTurn -> archPhoenixHeal)),
 
     stoneGolem,
 
-    Spell("Frost lightning", (state : GameState, playerId : PlayerId) =>
-      "Deals X damage to opponent\n(X = difference between his lowest power and owner highest power) [" +
-        getFrostLightX(state.players(playerId).houses, state.players(other(playerId)).houses) +
-      "] and permanently blocks target slot.",
+    Spell("elementalist.frost", (state : GameState, playerId : PlayerId) =>
+      I18n.bundle.format("elementalist.frost.description",
+        getFrostLightX(state.players(playerId).houses, state.players(other(playerId)).houses).toString),
       inputSpec = Some(SelectTargetSlot),
       effects = effects(Direct -> frostLight))),
     eventListener = Some(new CustomListener(new ElementalistEventListener)))

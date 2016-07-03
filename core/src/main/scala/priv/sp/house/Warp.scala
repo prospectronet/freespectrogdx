@@ -12,45 +12,39 @@ import priv.sp.update._
  */
 // FIXME: schizo when unbridle
 object Warp {
-  val photographer = new Creature("Photographer", Attack(4), 16,
-    "If adjacent creature die, he's replaced by photographer with same life.",
+  val photographer = new Creature("warp.photographer", Attack(4), 16,
+    I18n("warp.photographer.description"),
     reaction = new PhotoReaction)
 
-  val Warp = House("Warp", List(
+  val Warp = House("warp", List(
 
-    new Creature("Errant", Attack(4), 19, "Hide in shadow after killing a creature, come back when damaged.",
+    new Creature("warp.errant", Attack(4), 19, I18n("warp.errant.description"),
       runAttack = new ErrantAttack,
       reaction = new ErrantReaction),
 
-    Spell("EarthQuake", "Deals to opponent creatures damage equals to difference between owner and opponent mana",
+    Spell("warp.quake", I18n("warp.quake.description"),
       effects = effects(Direct -> quake)),
 
-    new Creature("Cloak", Attack(2).add(new CloakAttack), 15,
-      "When die restore the creature.\n" +
-        "Attack is added to underlying creature attack",
+    new Creature("warp.cloak", Attack(2).add(new CloakAttack), 15,
+      I18n("warp.cloak.description"),
       inputSpec = Some(SelectOwnerCreature),
       reaction = new CloakReaction),
 
     photographer,
 
-    new Creature("Schizo", Attack(5), 22,
-      "When summoned, opposite creature lose his abilities until schizo die.",
+    new Creature("warp.schizo", Attack(5), 22,
+      I18n("warp.schizo.description"),
       reaction = new SchizoReaction),
 
-    new Creature("Ram", Attack(6), 26,
-      "When summoned, opposite creature is destroyed and opponent get his mana back -2.\n" +
-        "(Cost of the creature -2)",
+    new Creature("warp.ram", Attack(6), 26,
+      I18n("warp.ram.description"),
       effects = effects(Direct -> ram)),
 
-    new Creature("Stranger", AttackSources().add(new StrangerAttack), 30,
-      "Attack is highest opponent mana.\n" +
-        "When summoned, take effects of opposite slot.(at least try to!)\n" +
-        " -immediate effects are not applied\n" +
-        " -can't duplicate effect to attack multiple targets", effects = effects(Direct -> merge)),
+    new Creature("warp.stranger", AttackSources().add(new StrangerAttack), 30,
+      I18n("warp.stranger.description"), effects = effects(Direct -> merge)),
 
-    new Creature("Warp Queen", Attack(6), 32,
-      "Opponent creatures lose their ability until end of next owner turn.\n" +
-      "Deals 4 damage to each of them", effects = effects(Direct -> warp))),
+    new Creature("warp.queen", Attack(6), 32,
+      I18n("warp.queen.description"), effects = effects(Direct -> warp))),
 
     eventListener = Some(OpponentListener({
       case _ : Limbo.LimboEventListener
