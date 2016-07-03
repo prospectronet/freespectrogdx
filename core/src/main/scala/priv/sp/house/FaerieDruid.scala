@@ -7,45 +7,43 @@ import priv.sp.update.{PlayerUpdate, HouseEventListener, SlotUpdate}
 import priv.util.FuncDecorators
 
 object FaerieDruid {
-  val rabble = new Creature("Butterfly Rabble", Attack(2), 10,
-    "When Butterfly Rabble dies it heals owner 4 life.",
+  val rabble = new Creature("faerie.rabble", Attack(2), 10,
+    I18n("faerie.rabble.description"),
   reaction = new RabbleReaction)
 
-  val FaerieDruid : House = House("Faerie Druid", List(
+  val FaerieDruid : House = House("faerie", List(
 
-    new Creature("Faerie Twins", Attack(4), 12,
-      "When summoned, heals its neighboring creatures 4 life. When dies, heals its neighboring creatures 4 life",
+    new Creature("faerie.twins", Attack(4), 12,
+      I18n("faerie.twins.description"),
       effects = effects(Direct -> twinHeal),
       reaction = new TwinReaction),
 
-    Spell("Faerie Fire", "Deals 5 damage to all blocked enemy creatures, stuns all unblocked enemy creatures.",
+    Spell("faerie.fire", I18n("faerie.fire.description"),
       effects = effects(Direct -> fire)),
 
-    new Creature("Nightwing Butterfly", Attack(4), 18,
-      "Nightwing Butterfly lowers the attack of all enemy creatures by 1.",
+    new Creature("faerie.nightwing", Attack(4), 18,
+      I18n("faerie.nightwing.description"),
       reaction = new NightwingReaction),
 
-    new Creature("Faerie Ring", Attack(2), 20,
-      "Faerie Ring increases the growth of owner's Faerie mana by 1." +
-        " Each time owner uses a Faerie card, increase Faerie Ring's attack by 2.",
+    new Creature("faerie.ring", Attack(2), 20,
+      I18n("faerie.ring.description"),
       effects = effects(OnTurn -> addMana(1, 4)),
       reaction = new RingReaction),
 
-    new Creature("Faerie Piper", Attack(4), 28,
-      "Faerie Piper heals its neighboring creatures 3 life each turn.",
+    new Creature("faerie.piper", Attack(4), 28,
+      I18n("faerie.piper.description"),
     effects = effects(OnTurn -> piper)),
 
-    Spell("Butterfly Cloud", "Summons a Butterfly Rabble in all owner's empty slots.",
+    Spell("faerie.cloud", I18n("faerie.cloud.description"),
       effects = effects(Direct -> cloud)),
 
-    new Creature("Unicorn", Attack(7), 34,
-      "Unicorn attacks in the turn summoned. Unicorn lowers the cost of all owner's creatures by 1.",
+    new Creature("faerie.unicorn", Attack(7), 34,
+      I18n("faerie.unicorn.description"),
       status = runFlag,
       reaction = new UnicornReaction),
 
-    new Creature("Faerie Dragon", Attack(9), 39,
-      "When summoned, Faerie Dragon heals all owner's creatures 20 life." +
-        "Faerie Dragon increases the attack of all other owner's creatures by 2 in the turn she is summoned.",
+    new Creature("faerie.dragon", Attack(9), 39,
+      I18n("faerie.dragon.description"),
     effects = effects(Direct -> dragon))),
 
     eventListener = Some(new CustomListener(new FaerieDruitListener)))

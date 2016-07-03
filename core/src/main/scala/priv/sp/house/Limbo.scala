@@ -10,56 +10,46 @@ import scala.util.Random
 object Limbo {
   import CardSpec._
 
-  val heavenKeeper = new Creature("Heaven's Keeper", Attack(3), 7,
-    "Each time another owner's creature enters 'Limbo-state' " +
-      "Heaven's Keeper heals 2 life to its owner and each of its owner's creatures.",
+  val heavenKeeper = new Creature("limbo.heaven", Attack(3), 7,
+    I18n("limbo.heaven.description"),
     reaction = new HeavenKeeperReaction)
 
-  val hellKeeper = new Creature("Hell's Keeper", Attack(3), 10,
-    "Each time another owner's creature enters 'Limbo-state' " +
-      "Hell's Keeper deals 2 damage to the opponent and each of the opponent's creatures.",
+  val hellKeeper = new Creature("limbo.hell", Attack(3), 10,
+    I18n("limbo.hell.description"),
     reaction = new HellKeeperReaction)
 
-  val baron = new Creature("Limbo Baron", Attack(6), 36,
-    "when a spell or ability damages and kills KEEPER OF LIMBO or Limbo Baron they enter 'Limbo-state'." +
-      " When Limbo Baron enters 'Limbo-state' its attack doubles.")
+  val baron = new Creature("limbo.baron", Attack(6), 36,
+    I18n("limbo.baron.description"))
 
-  val wraith = new Creature("Limbo Wraith", Attack(1) add new WraithAttack, 14,
-    "Limbo Wraith's attack is equal to the number of owner's creatures that are in 'Limbo-state' plus 1." +
-      "Limbo Wraith's attack damages the opponent and each of the opponent's creatures.",
+  val wraith = new Creature("limbo.wraith", Attack(1) add new WraithAttack, 14,
+    I18n("limbo.wraith.description"),
     runAttack = MultiTargetAttack)
 
-  val Limbo: House = House("Limbo", List(
+  val Limbo: House = House("limbo", List(
     heavenKeeper,
 
     hellKeeper,
 
     wraith,
 
-    new Creature("Tower of sins", Attack(0), 21,
-      "each time an owner's creature enters 'Limbo-state' the opponent's mana of that creature's house is reduced by 1 and" +
-        " the owner's mana of that creature's house is increased by 1.",
+    new Creature("limbo.tower", Attack(0), 21,
+      I18n("limbo.tower.description"),
       reaction = new TowerReaction),
 
-    Spell("Nether Grasp", "destroys each of its caster's creatures and they enter 'Limbo-state'." +
-      "then deals 3 damage to each of the opponent's creatures " +
-      "for each of the caster's creatures that is in 'Limbo-state'.",
+    Spell("limbo.nether", I18n("limbo.nether.description"),
       effects = effects(Direct -> netherGrasp)),
 
-    new Creature("Soul Adjudicator", Attack(3), 21,
-      "each time an owner's creature enters 'Limbo-state', a Heaven's Keeper or Hell's Keeper (whichever is in your hand)" +
-        "that gains \"can't enter 'Limbo-state'\" restriction is summoned in a random empty slot adjacent to that creature.",
+    new Creature("limbo.adjudicator", Attack(3), 21,
+      I18n("limbo.adjudicator.description"),
       reaction = new SoulReaction),
 
-    Spell("Redemption", "target caster's creature that is in 'Limbo-state' is re-summoned with full health.",
+    Spell("limbo.redemption", I18n("limbo.redemption.description"),
       inputSpec = Some(SelectOwnerCreature),
       effects = effects(Direct -> redeem)),
 
     baron),
 
-    description = "Whenever enemy creature attacks and kills KEEPER OF LIMBO or his creatures," +
-      " their death is postponed until the end of KEEPER OF LIMBO's turn, they are considered to be in 'Limbo-state'." +
-      " Creatures in 'Limbo-state' attack and block as usual.",
+    description = I18n("limbo.description"),
     effects = List(OnEndTurn -> cleanLimbo),
     eventListener = Some(new CustomListener(new LimboEventListener)))
 

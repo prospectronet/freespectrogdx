@@ -11,54 +11,47 @@ object Soulbinder {
 
   val initState = BoundSouls()
 
-  val soulSheppard = new Creature("Soul Sheppard", Attack(4).add(new SheppardAttack), 39,
-    "Must be summoned onto a Bound Soul. Soul Sheppard's attack is increased by 1 for each Bound Soul the owner controls. " +
-      "Each turn Soul Sheppard heals the owner 2 life for each Bound Soul the owner controls.",
+  val soulSheppard = new Creature("soulbinder.sheppard", Attack(4).add(new SheppardAttack), 39,
+    I18n("soulbinder.sheppard.description"),
     inputSpec = Some(SelectOwner(selectBoundSoul)),
     effects   = effects(OnTurn -> sheppard))
 
-  val Soulbinder = House("Soulbinder", List(
+  val Soulbinder = House("soulbinder", List(
 
-    new Creature("Tethered Soul", Attack(4), 17,
-      "Must be summoned onto a Bound Soul. When Tethered Soul dies it is replaced by a Bound Soul.",
+    new Creature("soulbinder.tethered", Attack(4), 17,
+      I18n("soulbinder.tethered.description"),
       inputSpec = Some(SelectOwner(selectBoundSoul)),
       reaction = new TetheredReaction),
 
-    Spell("Spiritual Summoning",
-      "Summons a Bound Soul into target empty slot & increases the caster's Fire, Water, Air, & Earth powers by 1.",
+    Spell("soulbinder.summon",
+      I18n("soulbinder.summon.description"),
       inputSpec = Some(SelectOwner(openSlotNoBoundSoul)),
       effects   = effects(Direct -> summon)),
 
-    new Creature("Soulseed Tree", Attack(5), 21,
-      "Must be summoned onto a Bound Soul. At the beginning of its owner's turn " +
-        "Soulseed Tree puts a Bound Soul into one of its neighbouring slots ( left to right) if that slot is not already occupied.",
+    new Creature("soulbinder.tree", Attack(5), 21,
+      I18n("soulbinder.tree.description"),
       inputSpec = Some(SelectOwner(selectBoundSoul)),
       effects   = effects(OnTurn -> tree)),
 
-    new Creature("Soul Seeker", Attack(6), 26,
-      "Must be summoned onto a Bound Soul. At the end of its owner's turn " +
-        "Soul Seeker moves into a random empty slot & puts a Bound Soul in the slot it used to occupied.",
+    new Creature("soulbinder.seeker", Attack(6), 26,
+      I18n("soulbinder.seeker.description"),
       inputSpec = Some(SelectOwner(selectBoundSoul)),
       effects   = effects(OnEndTurn -> seek)),
 
-    Spell("Spiritual Release",
-      "Heals the caster & all of the caster's creatures 3 life for each Bound Soul in play (own & opponent) " +
-        "then removes all Bound Souls from play (own & opponent) & puts 2 Bound Souls into random empty owner's slots.",
+    Spell("soulbinder.release",
+      I18n("soulbinder.release.description"),
       effects = effects(Direct -> release)),
 
     soulSheppard,
 
-    new Creature("Priestess of Passage", Attack(7), 37,
-      "Must be summoned onto a Bound Soul. When summoned Priestess of Passage heals 2 life to the owner " +
-        "& deals 2 damage to the opponent for each Bound Soul in play (own & opponent). " +
-        "Each time an owner's creature dies Priestess of Passage puts a Bound Soul into a random empty owner's slot.",
+    new Creature("soulbinder.priestess", Attack(7), 37,
+      I18n("soulbinder.priestess.description"),
       inputSpec = Some(SelectOwner(selectBoundSoul)),
       effects   = effects(Direct -> passage),
       reaction = new PriestessReaction),
 
-    new Creature("Spirit Dragon", Attack(6), 44,
-      "Must be summoned onto a Bound Soul. When summoned Spirit Dragon deals 6 damage to the opponent & all of the opponent's creatures. " +
-        "Each turn Spirit Dragon heals itself & the owner 3 life for each Bound Spirit the owner controls.",
+    new Creature("soulbinder.dragon", Attack(6), 44,
+      I18n("soulbinder.dragon.description"),
       inputSpec = Some(SelectOwner(selectBoundSoul)),
       effects   = effects(Direct -> { env: Env ⇒
         env.focus()
@@ -68,10 +61,7 @@ object Soulbinder {
       }, OnTurn -> dragon))
   ),
     data = initState,
-    description = "Bound Soul does not attack. Bound Soul receives no damage from attacking creatures, abilities, or spells. " +
-      "A creature opposite Bound Soul does not attack Bound Soul but rather attacks the owner directly as if the slot were empty. " +
-      "Any creature may be summoned onto a Bound Soul, when this occurs, Bound Soul is no longer in play. " +
-      "Bound Soul neither \"dies\" or is \"destroyed\".",
+    description = I18n("soulbinder.description"),
     effects = List(OnStart -> { env: Env ⇒ addSoulRandom(env.player)}),
     eventListener = Some(new CustomListener(new SoulListener))
   )

@@ -12,50 +12,38 @@ object Seasons {
   val defaultData = SeasonData()
   val lowerBasic = LowerHighCostMod(Set(0, 1, 2, 3))
 
-  val nectarBloom = new Creature("Nectarbloom", Attack(2), 10,
-    "Nectarbloom regenerates 2 life each turn.",
+  val nectarBloom = new Creature("seasons.Nectarbloom.name", Attack(2), 10,
+    I18n("seasons.Nectarbloom.description"),
     effects = effects(OnTurn -> focus(healCreature(2))))
-  val ailuv = new Creature("Ailuv Bees", Attack(4), 16,
-    "When Ailuv Bees is summoned, two Nectarblooms are summoned into random empty caster’s slots.\n" +
-      "Passive: Regrowth: Your mana growth is increased by 1 in each House with fewer than 2 mana.",
+  val ailuv = new Creature("seasons.AiluvBees.name", Attack(4), 16,
+		I18n("seasons.AiluvBees.description"),
     effects = effects(Direct -> spawnNectar))
-  val equinox = new Creature("Spirit of Equinox", Attack(5), 12,
-    "When summoned, deals 4 damage to opponent and each opponent’s creature, " +
-      "and heals 4 life to caster and each caster’s creature.\n" +
-      "Passive: Regrowth: Your mana growth is increased by 1 in each House with fewer than 2 mana.",
+  val equinox = new Creature("seasons.SpiritofEquinox.name", Attack(5), 12,
+    I18n("seasons.SpiritofEquinox.description"),
     effects = effects(Direct -> equinoxEffect))
-  val solarWave = Spell("Solar Wave",
-    "Opponent takes 2 damage for each of their empty creature slots. Opponent’s creatures take triple damage this turn.\n" +
-      "Passive: Midnight Sun: When you take 4 or more damage, that damage is reduced by 1.",
+  val solarWave = Spell("seasons.SolarWave.name",
+     I18n("seasons.SolarWave.description"),
     effects = effects(Direct -> solarWaveEffect))
-  val eternal = Spell("Eternal Summer",
-    "You may immediately play one creature and one spell from your hand, in either order. Both have -2 cost.\n" +
-      "Passive: Midnight Sun: When you take 4 or more damage, that damage is reduced by 1.",
+  val eternal = Spell("seasons.EternalSummer.name",
+    I18n("seasons.EternalSummer.description"),
     effects = effects(Direct -> eternalSummerEffect))
-  val cornucopia = new Creature("Cornucopia", Attack(0), 26,
-    "When summoned, heals all other allied creatures for 9 life. " +
-      "All other allied creatures receive +1 attack and take -1 damage while Cornucopia is on the board.\n" +
-      "Passive: Plentitude: The cost of your most expensive Fire, Water, Air, and Earth cards is reduced by 1.",
+  val cornucopia = new Creature("seasons.Cornucopia.name", Attack(0), 26,
+     I18n("seasons.Cornucopia.description"),
     effects  = effects(Direct -> cornucopiaEffect),
     reaction = new CornucopiaReaction)
-  val gaea = new Creature("Gaea s Avatar", AttackSources().add(new GaiaAttack), 60,
-    "Attack is equal to number of creatures on the board. " +
-      "Gaea's Avatar is unaffected by all spells but takes 1 damage each turn for each empty slot on the board.\n" +
-      "Passive: Plentitude: The cost of your most expensive Fire, Water, Air, and Earth cards is reduced by 1.",
+  val gaea = new Creature("seasons.GaeasAvatar.name", AttackSources().add(new GaiaAttack), 60,
+	I18n("seasons.GaeasAvatar.description"),
     effects  = effects(OnTurn -> gaeaEffect),
     reaction = new GaeaReaction)
-  val behemoth = new Creature("Behemoth of Frozen Time", Attack(7), 29,
-    "When summoned, opponent’s blocked creatures are stunned for a turn. " +
-      "Opponent’s mana in each House cannot grow higher than 9 while Behemoth of Frozen Time is in play.\n" +
-      "Passive: Wintry Chill: Opponent’s unblocked creatures take 1 damage each turn.",
+  val behemoth = new Creature("seasons.BehemothofFrozenTime.name", Attack(7), 29,
+    I18n("seasons.BehemothofFrozenTime.description"),
     effects  = effects(Direct -> freeze),
     reaction = new BehemothReaction)
-  val aurora = Spell("The Great Aurora",
-    "Caster’s creatures are healed for 16 health and each grant 3 mana of their own type to their caster.\n" +
-      "Passive: Wintry Chill: Opponent’s unblocked creatures take 1 damage each turn.",
+  val aurora = Spell("seasons.TheGreatAurora.name",
+    I18n("seasons.TheGreatAurora.description"),
     effects = effects(Direct -> greatAuroraEffect))
 
-  val Seasons = House("Seasons",
+  val Seasons = House("seasons",
     List(
       ailuv,
       equinox,
@@ -69,9 +57,8 @@ object Seasons {
     effects = List(
       OnTurn -> new Regrowth,
       OnTurn -> new Wintry),
-    description = "“Passing of Seasons”: Each of the Warden’s special cards grants him a small Passive Effect that remains active from the beginning of the game until the card is played.\n" +
-      "“Exhaustion”: The Warden’s special cards may only be used once apiece during the match.",
-    eventListener = Some(new CustomListener(new SeasonListener)))
+    description = I18n("seasons.description"),    
+	eventListener = Some(new CustomListener(new SeasonListener)))
 
   Seasons.initCards(Houses.basicCostFunc)
   Seasons.addAdditionalCards(nectarBloom)

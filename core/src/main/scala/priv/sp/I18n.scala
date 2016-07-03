@@ -6,7 +6,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.utils.I18NBundle
 
 object I18n {
-  val locale = Option(System.getenv("LC_CTYPE")) map Locale.forLanguageTag getOrElse Locale.getDefault()
+  val locale = Option(System.getenv("LC_CTYPE")) map lcToLocale getOrElse Locale.getDefault()
   val isRussian = locale.getLanguage == "ru"
 
   val usedLocale = if (isRussian) locale else Locale.ENGLISH
@@ -29,4 +29,6 @@ object I18n {
       case e : MissingResourceException => key
     }
   }
+
+  private def lcToLocale(x : String) : Locale = Locale.forLanguageTag(x.replaceAll("_" ,"-"))
 }
