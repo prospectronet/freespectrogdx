@@ -10,32 +10,36 @@ import scala.util._
 
 class FairyKnight {
 
-  val vodyanoy = new Creature("Vodyanoy", Attack(4), 11)
-  val rusalka = new Creature("Rusalka", Attack(6), 19, "when kills creature, opponent loses its card.", reaction = new RusalkaReaction)
-  val likho = new Creature("Likho", Attack(6), 21 ,
-    """when dies, reduces hp of creature which killed it to 10
-(kills if it has less than 10 hp).
-If killed by spell or ability, gives to owner 2 random power.""", reaction = new LikhoReaction)
-  val gory = new Creature("Zmey Gorynych", Attack(9), 35,
-    """when dies, reborns as two-headed gorynych 6/25,
-then as one-headed gorynych 3/15.
-when any player uses fire card, deals 6 damage to random enemy creature.""", reaction = new ZGoryReaction)
+  val vodyanoy = new Creature("fairy.vodyanoy", Attack(4), 11)
+  val rusalka = new Creature("fairy.rusalka", Attack(6), 19,
+                             I18n("fairy.rusalka.description"),
+                             reaction = new RusalkaReaction)
+  val likho = new Creature("fairy.likho", Attack(6), 21 ,
+    I18n("fairy.likho.description"), reaction = new LikhoReaction)
+  val gory = new Creature("fairy.zmey", Attack(9), 35,
+    I18n("fairy.zmey.description"), reaction = new ZGoryReaction)
   val someGory = Some(gory)
-  val thgorynych = new Creature("two-headed gorynych", Attack(6), 25, reaction = new THGoryReaction)
-  val ohgorynych = new Creature("one-headed gorynych", Attack(3), 15, reaction = new OHGoryReaction)
+  val thgorynych = new Creature("fairy.2head", Attack(6), 25, reaction = new THGoryReaction)
+  val ohgorynych = new Creature("fairy.1head", Attack(3), 15, reaction = new OHGoryReaction)
 
-  val Fairy = House("Fairy knight", List(
-    new Creature("Lesovik", Attack(4), 14, "blocks card of opposite creature, while alive.", effects = effects(Direct -> lesovik), reaction = new LesovikReaction),
-    new Creature("Kikimora", Attack(3), 13, "when enters the game, summons vodyanoy 4/11 in random slot.", effects = effects(Direct -> kiki)),
+  val Fairy = House("fairy", List(
+    new Creature("fairy.lesovik", Attack(4), 14,
+                 I18n("fairy.lesovik.description"),
+                 effects = effects(Direct -> lesovik), reaction = new LesovikReaction),
+    new Creature("fairy.kikimora", Attack(3), 13,
+                 I18n("fairy.kikimora.description"), 
+                 effects = effects(Direct -> kiki)),
     rusalka,
     likho,
-    new Creature("Sirin", Attack(4), 23, "halves attack of opposite creature and its neighbours while alive, attack rounds up.", effects = effects(Direct -> sirin), reaction = new SirinReaction),
-    new Creature("Alkonost", Attack(6), 31,
-      "every turn blocks 6 random enemy cards. " +
-        "Cannot block cards which have already been blocked previous turn",
+    new Creature("fairy.sirin", Attack(4), 23,
+                 I18n("fairy.sirin.description"),
+                 effects = effects(Direct -> sirin), reaction = new SirinReaction),
+    new Creature("fairy.alkonost", Attack(6), 31,
+      I18n("fairy.alkonost.description"),
       effects = effects(Direct -> alko, OnTurn -> alko),
       reaction = new AlkoReaction),
-    new Creature("Firebird", Attack(8), 32, "invulnerable while next to friendly fire creature.", reaction = new FirebirdReaction),
+    new Creature("fairy.firebird", Attack(8), 32,
+                 I18n("fairy.firebird.description"), reaction = new FirebirdReaction),
     gory),
     eventListener = Some(new CustomListener(new FKEventListener)))
 

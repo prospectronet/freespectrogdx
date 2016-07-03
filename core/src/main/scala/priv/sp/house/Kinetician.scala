@@ -8,39 +8,38 @@ import priv.util.FuncDecorators
 
 object Kinetician extends ChangeTarget {
 
-  val manipulator = new Creature("Manipulator", Attack(3), 28,
-    "when enters the game, attack of all enemy creatures becomes equal to 3 for 1 turn." +
-      "When opponent summons creature, it switches owners, manipulator loses 4X hp (X = cost of that creature)",
+  val manipulator = new Creature("kinetician.manipulator", Attack(3), 28,
+    I18n("kinetician.manipulator.description"),
     effects = effects(Direct -> manipulate),
     reaction = new ManipulatorReaction)
 
-  val Kinetician = House("Kinetician", List(
+  val Kinetician = House("kinetician", List(
 
-    new Creature("Magerunner", Attack(4), 10,
-      "when summoned, switches places with friendly creature which has highest attack",
+    new Creature("kinetician.magerunner", Attack(4), 10,
+      I18n("kinetician.magerunner.description"),
       effects = effects(Direct -> mage)),
 
-    new Creature("Tricker", Attack(4), 10,
-      "every turn moves to nearest unblocked slot",
+    new Creature("kinetician.tricker", Attack(4), 10,
+      I18n("kinetician.tricker.description"),
       effects = effects(OnTurn -> trick)),
 
-    Spell("Focused Force", " this turn all friendly creatures attack only target creature with attack increased by 1",
+    Spell("kinetician.force", I18n("kinetician.force.description"),
       inputSpec = Some(SelectTargetCreature),
       effects = effects(Direct -> focus)),
 
-    Spell("Warp reality", "reduces hp of target creature to X (X = its level)",
+    Spell("kinetician.warp", I18n("kinetician.warp.description"),
       inputSpec = Some(SelectTargetCreature),
       effects = effects(Direct -> warp)),
 
-    new Creature("Lone mage", Attack(7), 22,
-      "every turn deals to opponent X damage (X = number of opponent`s empty slots)",
+    new Creature("kinetician.mage", Attack(7), 22,
+      I18n("kinetician.mage.description"),
       effects = effects(OnTurn -> lone)),
 
-    Spell("Call the fittest", "halves cost of cards of target element (each for single usage)",
+    Spell("kinetician.call", I18n("kinetician.call.description"),
       inputSpec = Some(SelectOwner(nonSpecial)),
       effects = effects(Direct -> fittest)),
 
-    Spell("Force barrier", "doubles current and max hp of target friendly creature. It skips next turn",
+    Spell("kinetician.barrier", I18n("kinetician.barrier.description"),
       inputSpec = Some(SelectOwnerCreature),
       effects = effects(Direct -> forceBarrier)),
 

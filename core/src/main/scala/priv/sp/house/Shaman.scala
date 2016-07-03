@@ -11,32 +11,43 @@ object Shaman {
   import CardSpec._
 
   val initState = WolfState()
-  val wolf = new Creature("ghost wolf", AttackSources(Some(2)).add(new WolfAttackBonus), 18, reaction = new WolfReaction, runAttack = new WolfAttack,
+
+  val wolf = new Creature("shaman.ghost", AttackSources(Some(2)).add(new WolfAttackBonus), 18, reaction = new WolfReaction, runAttack = new WolfAttack,
     effects = effects(Direct -> wolfSummoned))
-  val shadow = new Creature("Wolf shadow", AttackSources(Some(4)).add(new ShadowAttack), 45, "all cards which affect wolf affect wolf shadow as well.\nWhen enters the game, its neighbours attack immediately.",
+
+  val shadow = new Creature("shaman.shadow", AttackSources(Some(4)).add(new ShadowAttack), 45, I18n("shaman.shadow.description"),
     reaction = new WolfShadowReaction,
     effects = effects(Direct -> shade),
     runAttack = new WolfAttack)
-  val protector = new Creature("Spirit protector", Attack(4), 20, "while protector remains in the game, all damage received by owner will be decreased by 2, and enemy spells will heal wolf instead of damaging.", reaction = new ProtectorReaction)
 
-  val Shaman: House = House("Shaman", List(
-    Spell("Unappeasable Hunger", "wolf receives +X attack (X - attack of strongest creature on board) for 1 turn.",
+  val protector = new Creature("shaman.protector", Attack(4), 20, I18n("shaman.protector.description"), reaction = new ProtectorReaction)
+
+  val Shaman: House = House("shaman", List(
+    Spell("shaman.hunger", I18n("shaman.hunger.description"),
       effects = effects(Direct -> hunger)),
-    new Creature("Spirit of rage", Attack(2), 10, "when enters the game, permanently increases attack of neighbours by 1.", effects = effects(Direct -> rage)),
-    Spell("Power of full moon", "permanently decreases damage dealt to wolf by 1 and heals 8 life to his neighbours and owner.", effects = effects(Direct -> fullMoon)),
-    Spell("Phantom fury", "Deals 7 damage to all enemy creatures and permanently increases wolf attack by 1 for each creature died this turn.", effects = effects(Direct -> phantomFury)),
+
+    new Creature("shaman.rage", Attack(2), 10, I18n("shaman.rage.description"), effects = effects(Direct -> rage)),
+
+    Spell("shaman.moon", I18n("shaman.moon.description"), effects = effects(Direct -> fullMoon)),
+
+    Spell("shaman.fury", I18n("shaman.fury.description"), effects = effects(Direct -> phantomFury)),
+
     protector,
-    new Creature("Spirit hunter", Attack(6), 34, "while hunter remains in the game, wolf gets +2 attack and heals himself on the dealt damage when attacks.",
+
+    new Creature("shaman.hunter", Attack(6), 34, I18n("shaman.hunter.description"),
       reaction = new HunterReaction,
       effects = effects(Direct -> hunt)),
+
     shadow,
-    new Creature("Phantom mate", Attack(5), 29, "when enters the game, permanently decreases cost of wolf cards by 1 and deals 8 damage to opponent.\nEvery turn wolf additionally attacks slot opposite to mate.",
+
+    new Creature("shaman.mate", Attack(5), 29, I18n("shaman.mate.description"),
       reaction = new MateReaction,
       effects = effects(Direct -> mate))),
+
     effects = List(OnStart -> initWolf),
     data = initState,
     eventListener = Some(new CustomListener(new ShamanEventListener)),
-    description = "Spirit of ancestors:\nAt the beginning of the game ghost wolf appears in slot next to the most right.")
+    description = I18n("shaman.description"))
 
   Shaman.addAdditionalCards(wolf)
   wolf.cost = 2
