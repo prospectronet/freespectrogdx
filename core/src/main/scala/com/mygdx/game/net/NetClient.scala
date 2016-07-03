@@ -63,8 +63,8 @@ class NetClient(host : String, port : Int, val user : String,
         prom.future onComplete {
           case Failure(t) => logMsg(t.getMessage) ; t.printStackTrace()
           case Success(OpponentInfo(oppName, oppHouses, oppChecksum)) =>
-            if (oppChecksum != screenResources.checksum) {
-              val msg = "Checksum mismatch " + screenResources.checksum + "/" + oppChecksum
+            if (oppChecksum != screenResources.storage.checksum) {
+              val msg = "Checksum mismatch " + screenResources.storage.checksum + "/" + oppChecksum
               log.error(msg)
               logMsg(msg)
               Thread.sleep(1000)
@@ -103,7 +103,7 @@ class NetClient(host : String, port : Int, val user : String,
                 msg match {
                   case _ : AskOpponentInfo =>
                     proxyMessage(ProxyAnswer(id,
-                      OpponentInfo(user, gameResources.playerChoices(owner).map(_.houseId), screenResources.checksum)))
+                      OpponentInfo(user, gameResources.playerChoices(owner).map(_.houseId), screenResources.storage.checksum)))
                   case _ => log.debug("unknown msg " + msg)
                 }
             case ProxyAnswer(answerId, msg) =>

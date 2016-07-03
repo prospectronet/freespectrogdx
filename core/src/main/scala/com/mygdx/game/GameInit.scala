@@ -48,7 +48,7 @@ class GameInit(val screenResources : ScreenResources,
   cardPanels foreach (_.init(commandRecorder))
   background setBackground session.state.players(session.server.startingPlayer).desc.get.houses(4).house
 
-  userMenu.skipButton addListener onClick {
+  userMenu.getButton(I18n("button.skip")) addListener onClick {
     println("skip")
     if (session.updater.ended.isEmpty && commandRecorder.cont.isDefined) {
       commandRecorder.skip()

@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.{List => UiList, _}
 import com.mygdx.game._
 import com.mygdx.game.gui._
 import priv.util.GuiUtils._
+import priv.sp.I18n
 
 class NetPanel(
   screens : Screens, buttons : ButtonPanel) {
@@ -12,7 +13,7 @@ class NetPanel(
   import screens._
   import screenResources.{skin2 => skin}
 
-  val name = new TextField(System.getProperty("user.name"), skin)
+  val name = new TextField(screens.storage.userName getOrElse System.getProperty("user.name"), skin)
   val host = new TextField("172.99.78.51", skin)
   val port = new TextField("12345", skin)
   val logs = new TextArea("", skin)
@@ -38,7 +39,7 @@ class NetPanel(
   val panel = table
   table.pad(5).bottom().pack()
 
-  buttons.ConnectButton addListener onClick {
+  buttons.getButton(I18n("button.connect")) addListener onClick {
     screenResources.clientOption foreach { client => client.release()  }
     try {
       val client = new NetClient(
@@ -46,6 +47,7 @@ class NetPanel(
         screens,
         logText, logDuelRequest, setPlayerList)
       screenResources.clientOption = Some(client)
+      screenResources.storage persist Map(Storage.USER_NAME -> client.user)
       logText("Connected")
     } catch { case e : Exception =>
       logText(e.getMessage)

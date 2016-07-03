@@ -5,6 +5,7 @@ import com.mygdx.game.net.RemoteOpponent
 import priv.sp.Local
 import priv.util.Utils._
 import priv.util.GuiUtils._
+import priv.sp.I18n
 
 trait GameScreenContext {
   def gameScreen : GameScreen
@@ -22,7 +23,7 @@ class RemoteGameScreenContext(val gameScreen: GameScreen, opponent : RemoteOppon
   val gameInit = new GameInit(screenResources, gameResources, opponent)
   initInput(gameInit.board.panel, scrollScreen = true)(_ => false)
 
-  gameInit.userMenu.quitButton addListener onClick {
+  gameInit.userMenu.getButton(I18n("button.quit")) addListener onClick {
     opponent.client send Message(Header(MessageType.ExitDuel))
     opponent.client send Message(Header(MessageType.ListPlayers))
     releaseLocks(gameInit)
@@ -41,10 +42,10 @@ class LocalGameScreenContext(val gameScreen: GameScreen) extends GameScreenConte
     val gameInit = new GameInit(screenResources, gameResources, new Local(gameResources))
     screenResources.disconnectIfNeeded()
 
-    gameInit.userMenu.newButton addListener onClick {
+    gameInit.userMenu.getButton(I18n("button.new")) addListener onClick {
       currentGame = createGame()
     }
-    gameInit.userMenu.quitButton addListener onClick {
+    gameInit.userMenu.getButton(I18n("button.quit")) addListener onClick {
       releaseLocks(currentGame)
       gameScreen.returnToStart()
     }
@@ -60,7 +61,7 @@ class LocalGameScreenContext(val gameScreen: GameScreen) extends GameScreenConte
   class LocalGameInit(gameInit : GameInit) {
     import gameInit._
 
-    userMenu.restartButton.addListener(onClick {
+    userMenu.getButton(I18n("button.restart")).addListener(onClick {
       println("restart")
       switchNewGame {
         session.server.reset()

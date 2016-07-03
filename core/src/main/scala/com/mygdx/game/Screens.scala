@@ -13,11 +13,12 @@ import priv.util.GuiUtils._
 
 // common resources of the screens
 class Screens(val game : Game) {
-  val screenResources       = new ScreenResources
-  val gameResources         = new GameResources
-  var lastE                 = Option.empty[Throwable]
-  val lobbyScreen           = new LobbyScreen(this)
-  val gameScreen            = new GameScreen(this)
+  val storage         = new Storage()
+  val screenResources = new ScreenResources(storage)
+  val gameResources   = new GameResources
+  var lastE           = Option.empty[Throwable]
+  val lobbyScreen     = new LobbyScreen(this)
+  val gameScreen      = new GameScreen(this)
 
   import screenResources._
 
