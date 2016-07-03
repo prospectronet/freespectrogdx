@@ -10,9 +10,6 @@ import com.mygdx.game.gui.{GameSettings, LobbyBoard}
 import priv.sp.GameResources
 import priv.util.GuiUtils._
 
-class PresStartScreen() extends ScreenAdapter {
-
-}
 
 // common resources of the screens
 class Screens(val game : Game) {

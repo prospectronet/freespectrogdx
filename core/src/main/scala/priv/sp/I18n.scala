@@ -1,35 +1,32 @@
 package priv.sp
 
-import java.util.Scanner
+import java.util.{Locale, MissingResourceException}
 
-import scala.io.{Codec, Source}
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.utils.I18NBundle
 
 object I18n {
-  val locale = Option(System.getenv("LC_CTYPE")) getOrElse java.util.Locale.getDefault().toString()
-  val isRussian = locale.startsWith("ru_")
-  val localeIndex = if (isRussian) 1 else 0
-  val s = Source.fromURL(this.getClass.getClassLoader.getResource("i18n.csv"))(Codec.UTF8)
-  val messages = s.getLines().collect { case l if l.nonEmpty =>
-    val name :: values = l.split(";").toList
-    name -> values
-  }.toMap
+  val locale = Option(System.getenv("LC_CTYPE")) map Locale.forLanguageTag getOrElse Locale.getDefault()
+  val isRussian = locale.getLanguage == "ru"
 
-  def apply(name : String) = {
-    messages.get(name) match {
-      case Some(values) =>
-        if (values.size <= localeIndex) {
-          values(0)
-        } else {
-          values(localeIndex)
-        }
-      case None => name
+  val usedLocale = if (isRussian) locale else Locale.ENGLISH
+
+  val bundle = I18NBundle.createBundle(Gdx.files.internal("i18n"), usedLocale)
+  val defaultBundle = if (isRussian) I18NBundle.createBundle(Gdx.files.internal("i18n"), Locale.ENGLISH) else bundle
+
+  def apply(key : String) = {
+    try {
+      bundle.get(key)
+    } catch {
+      case e : MissingResourceException => key
     }
   }
 
-  def default(name : String) = {
-    messages.get(name) match {
-      case Some(values) => values(0)
-      case None => name
+  def default(key : String) = {
+    try {
+      defaultBundle.get(key)
+    } catch {
+      case e : MissingResourceException => key
     }
   }
 }
