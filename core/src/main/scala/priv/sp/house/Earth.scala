@@ -8,29 +8,29 @@ trait EarthHouse {
   import GameCardEffect._
 
   val Earth: House = House("earth", List(
-    new Creature("Elven", Attack(2), 12, "Heals owner by 3 every turn", effects = effects(OnTurn -> focus(heal(3)))),
-    Spell("Natures care", "heals target and owner by 8",
+    new Creature("earth.elven", Attack(2), 12, I18n("earth.elven.description"), effects = effects(OnTurn -> focus(heal(3)))),
+    Spell("earth.care", I18n("earth.care.description"),
       inputSpec = Some(SelectOwnerCreature),
       effects = effects(Direct -> heal(8), Direct -> healCreature(8))),
-    new Creature("Forest Sprite", Attack(1), 22, "attack all opponent creatures", runAttack = MultiTargetAttack),
-    Spell("Plant therapy",
-      (state : GameState, playerId : PlayerId) => "heals by 2 * earth mana ["+(2 * state.players(playerId).houses(3).mana)+"]",
+    new Creature("earth.sprite", Attack(1), 22, I18n("earth.sprite.description"), runAttack = MultiTargetAttack),
+    Spell("earth.therapy",
+      (state : GameState, playerId : PlayerId) => I18n.bundle.format("earth.therapy.description", (2 * state.players(playerId).houses(3).mana).toString),
       effects = effects(Direct -> { env: Env ⇒ env.player.heal(2 * env.getMana(3)) })),
-    new Creature("woods hermit", Attack(1), 13, "Increase earth mana growth by 2", reaction = ManaGrowthReaction(2, 3)),
-    Spell("Fury", (state : GameState, playerId : PlayerId) =>
-      "Deals to opponent the sum of the attacks of the 2 strongest owner creatures["+getFuryAttack(state.players(playerId))+"]",
+    new Creature("earth.hermit", Attack(1), 13, I18n("earth.hermit.description"), reaction = ManaGrowthReaction(2, 3)),
+    Spell("earth.fury", (state : GameState, playerId : PlayerId) =>
+      I18n.bundle.format("earth.fury.description", getFuryAttack(state.players(playerId)).toString),
       effects = effects(Direct -> fury)),
-    new Creature("Huge spider", Attack(4), 21, "Spawn 2 forest spiders around him", effects = effects(Direct -> spider)),
-    new Creature("Troll", Attack(6), 26, "Every turn heals himself by 4", effects = effects(OnTurn -> focus(healCreature(4)))),
-    Spell("Stone shower", "Deals 25 damage to any creature", effects = effects(Direct -> massDamage(25, isSpell = true))),
-    new Creature("Earth Elemental", AttackSources().add(ManaAttack(3)), 49, effects = effects(OnTurn -> addMana(1, 3))),
-    new Creature("Master healer", Attack(3), 35, "Every turn heals by 3 owner and his creatures",
+    new Creature("earth.hugespider", Attack(4), 21, I18n("earth.hugespider.description"), effects = effects(Direct -> spider)),
+    new Creature("earth.troll", Attack(6), 26, I18n("earth.troll.description"), effects = effects(OnTurn -> focus(healCreature(4)))),
+    Spell("earth.shower", I18n("earth.shower.description"), effects = effects(Direct -> massDamage(25, isSpell = true))),
+    new Creature("earth.elemental", AttackSources().add(ManaAttack(3)), 49, effects = effects(OnTurn -> addMana(1, 3))),
+    new Creature("earth.healer", Attack(3), 35, I18n("earth.healer.description"),
       effects = effects(OnTurn -> focus(heal(3)), OnTurn -> healCreatures(3))),
-    new Creature("Hydra", Attack(3), 40, "Attack all opponent creatures",
+    new Creature("earth.hydra", Attack(3), 40, I18n("earth.hydra.description"),
       runAttack = MultiTargetAttack,
       effects = effects(OnTurn -> healCreature(4)))), houseIndex = 3)
 
-  private val forestSpider = new Creature("forest spider", Attack(2), 11) {
+  private val forestSpider = new Creature("earth.forestspider", Attack(2), 11) {
     cost = 1
   }
 
