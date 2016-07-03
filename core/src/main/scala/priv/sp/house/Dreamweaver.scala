@@ -14,7 +14,7 @@ class Dreamweaver {
     I18n("dreamweaver.castle.description"),
     runAttack = MultiTargetAttack, reaction = new CastleReaction)
 
-  val Dreamweaver = House("Dreamweaver", List(
+  val Dreamweaver = House("dreamweaver", List(
     new Creature("dreamweaver.wisp", AttackSources(Some(2), Vector(EtherealAttackSource)), 8,
       I18n("dreamweaver.wisp.description"),
       reaction = new EtherealReaction),
