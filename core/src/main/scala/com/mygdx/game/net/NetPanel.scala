@@ -1,8 +1,10 @@
 package com.mygdx.game.net
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener
 import com.badlogic.gdx.scenes.scene2d.ui.{List => UiList, _}
 import com.mygdx.game._
+import com.mygdx.game.effects.SoundEntity
 import com.mygdx.game.gui._
 import priv.util.GuiUtils._
 import priv.sp.I18n
@@ -80,19 +82,28 @@ class NetPanel(
     }
   }
 
-
   def setPlayerList(players : List[PlayerInfo]) = {
     playerList.setItems(players : _*)
   }
 
   def logText(s : String) = {
     logs.appendText(s + "\n")
+    playSound("sounds/chat.mp3")
   }
 
   def logDuelRequest(id : String) = {
     playerList.getItems.toArray().find(_.id == id) match {
       case None => logText("duel request from unknown id " + id)
       case Some(p) => logText(p.name + " invite you to a duel")
+    }
+    playSound("sounds/duel-request.mp3")
+  }
+
+  def isInLobby() = screens.game.getScreen.isInstanceOf[LobbyScreen]
+  def playSound(name : String) = {
+    if (isInLobby()) {
+      val sound = Gdx.audio.newSound(Gdx.files.internal(name))
+      screenResources.engine addEntity SoundEntity(sound, 3, screenResources)
     }
   }
 }
