@@ -14,14 +14,14 @@ trait GameSessionController {
   def waitForUser(c: TVar[Option[Command]]) : Unit
 }
 
-class GameSession(val server: GameServer, resources: GameResources) {
+class GameSession(val server: GameServer, resources: GameResources , myName : String) {
 
   @volatile var state = server.initState
   val sp = resources.sp
   val desc = server.desc
   val myPlayerId = other(server.playerId)
   val otherPlayerId = server.playerId
-  val names = playerIds.map { id ⇒ if (id == myPlayerId) "me" else server.name }
+  val names = playerIds.map { id ⇒ if (id == myPlayerId) myName else server.name }
   var gameLock = new priv.util.RichLock
   var controller : GameSessionController = null
 

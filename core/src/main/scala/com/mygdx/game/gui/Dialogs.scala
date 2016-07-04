@@ -55,7 +55,6 @@ class GameSettings(resources : GameResources, screenResources : ScreenResources)
       createBtn("bs", self) { select(resources.sp.houses.bs) }),
       table)
 
-    load()
     resources.playerChoices(id) foreach (h => choiceCheckBoxes(h.label).setChecked(true))
     updateResources()
 
@@ -63,13 +62,6 @@ class GameSettings(resources : GameResources, screenResources : ScreenResources)
       val selecteds = choiceCheckBoxes.collect { case (choice, checkbox) if checkbox.isChecked => choice }.toSet
       resources.playerChoices = resources.playerChoices.updated(id, specials.filter(x ⇒ selecteds.contains(x.label)))
       screenResources.storage persist Map(Storage.CLASS_CHOICE(id) -> resources.playerChoices(id).map(_.name).mkString(","))
-    }
-
-    def load() : Unit = {
-      val choices = screenResources.storage.classesChoices(id)
-      if (choices.nonEmpty) {
-        resources.playerChoices = resources.playerChoices.updated(id, specials.filter(x ⇒ choices.contains(x.name)))
-      }
     }
 
     def select(houses: List[House]) : Unit = {

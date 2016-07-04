@@ -21,7 +21,7 @@ class GameInit(val screenResources : ScreenResources,
                val gameResources : GameResources,
                val server : GameServer) {
 
-  val session          = new GameSession(server, gameResources)
+  val session          = new GameSession(server, gameResources, screenResources.storage.userName getOrElse "me")
   val descriptionPanel = new DescriptionPanel(screenResources)
   val historyPanel     = new DescriptionPanel(screenResources, Color.GRAY)
   val userMenu         = new ButtonPanel(screenResources.skin)

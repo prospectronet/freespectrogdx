@@ -9,6 +9,7 @@ import com.badlogic.gdx._
 import com.mygdx.game.gui.{GameSettings, LobbyBoard}
 import priv.sp.GameResources
 import priv.util.GuiUtils._
+import priv.sp._
 
 
 // common resources of the screens
@@ -20,6 +21,7 @@ class Screens(val game : Game) {
   val lobbyScreen     = new LobbyScreen(this)
   val gameScreen      = new GameScreen(this)
 
+  loadClassPrefs()
   import screenResources._
 
   def resize (width : Int, height : Int) {
@@ -91,6 +93,16 @@ class Screens(val game : Game) {
     group.getChildren.asScala foreach {
       case g : Group => setDebug(g)
       case a : Actor => a.setDebug(isDebug)
+    }
+  }
+
+
+  def loadClassPrefs() : Unit = {
+    playerIds foreach { id =>
+      val choices = storage.classesChoices(id)
+      if (choices.nonEmpty) {
+        gameResources.playerChoices = gameResources.playerChoices.updated(id, gameResources.sp.houses.special.filter(x ⇒ choices.contains(x.name)))
+      }
     }
   }
 

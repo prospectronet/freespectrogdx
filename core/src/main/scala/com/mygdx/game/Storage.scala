@@ -24,6 +24,7 @@ class Storage {
   val userPrefsPath = Gdx.files external ".freespectro/user.prefs"
   val userPrefs     = new Properties()
   val checksum      = Utils.getChecksum() // store this? to check if changed to redownload assets (or try to check assets?)
+  println("checksum " + checksum)
 
   var userName       = Option.empty[String]
   var cardTheme      = "original"
