@@ -11,6 +11,7 @@ import priv.util.Utils
 
 object Storage {
   val USER_NAME = "user.name"
+  val CARD_THEME = "card.theme"
   val CLASS_CHOICE = List("class.choice", "ai.class.choice")
 }
 
@@ -19,13 +20,14 @@ import Storage._
 class Storage {
 
   val assetPath     = Gdx.files external ".freespectro"
-  val packPath      = Gdx.files external ".freespectro/pack"
+  val themesPath    = Gdx.files external ".freespectro/themes"
   val userPrefsPath = Gdx.files external ".freespectro/user.prefs"
   val userPrefs     = new Properties()
   val checksum      = Utils.getChecksum() // store this? to check if changed to redownload assets (or try to check assets?)
 
-  var userName         = Option.empty[String]
-  var classesChoices   = List(List.empty[String], List.empty[String])
+  var userName       = Option.empty[String]
+  var cardTheme      = "original"
+  var classesChoices = List(List.empty[String], List.empty[String])
 
   if (userPrefsPath.exists()) {
     userPrefs.load(userPrefsPath.reader())
@@ -33,11 +35,10 @@ class Storage {
   }
 
   def fetchAssets(config : Config) : Unit = {
-    val p = packPath.file().getCanonicalPath()
-    if (! java.nio.file.Files.exists(Paths get p)) {
-      val imagePack = config getString "imagepack.choice"
-      download(new URL(config getString "imagepack.backgrounds"), "backgrounds.zip")
-      download(new URL(config getString ("imagepack." + imagePack)), "images.zip")
+    val themePath = themesPath.file().getCanonicalPath + File.separator + cardTheme
+    if (! java.nio.file.Files.exists(Paths get themePath)) {
+      downloadAndUnzip(new URL(config getString "imagepack.backgrounds"), "backgrounds.zip", assetPath.file().getCanonicalPath)
+      downloadAndUnzip(new URL(config getString ("imagepack." + cardTheme)), cardTheme+".zip", themePath)
     }
   }
 
@@ -49,18 +50,21 @@ class Storage {
 
   private def initVars() : Unit = {
     Option(userPrefs getProperty USER_NAME) foreach (x => userName = Some(x))
+    Option(userPrefs getProperty CARD_THEME) foreach (x => cardTheme = x)
     CLASS_CHOICE.zipWithIndex foreach { case (key, idx) =>
       Option(userPrefs getProperty key) foreach (x => classesChoices = classesChoices.updated(idx, x.split(",").toList))
     }
   }
 
-  private def download(url : URL, name : String) : Unit = {
-    val targetDownload = assetPath.file().getCanonicalPath + File.separator + name
-    if (! new File(targetDownload).exists()) {
-      assetPath.file().mkdirs()
+  private def downloadAndUnzip(url : URL, name : String, targetFolder : String) : Unit = {
+    val tempFolder = assetPath.file().getCanonicalPath + File.separator + "tmp"
+    val targetDownload = tempFolder + File.separator + name
+    val targetFile = new File(targetDownload)
+    if (! targetFile.exists()) {
+      targetFile.getParentFile.mkdirs()
       println("Downloading " + url + " to " + targetDownload)
       Utils.download(url, name, targetDownload)
     }
-    Utils.unzip(targetDownload, assetPath.file().getCanonicalPath)
+    Utils.unzip(targetDownload, targetFolder)
   }
 }
