@@ -20,81 +20,81 @@ import priv.util.FuncDecorators
 object HighPriest {
 
   val initState = HPriestData()
-  val apis = new Creature("Apis", Attack(4), 25,
-    "Every turn gives to owner 1 special power and 3 hp for each other apis on the board.",
+  val apis = new Creature("highpriest.Apis", Attack(4), 25,
+	I18n("highpriest.Apis.description"),
     effects = effects(OnTurn -> apisEffect))
 
-  val sphynx = new Creature("Sphinx", Attack(7), 24,
-    "When dies, leaves puzzle 0/6.\n" +
-    "If puzzle was destroyed by enemy creature, sphinx reborns with halved hp.\n" +
-    "If puzzle was destroyed by enemy spell or ability, opponent loses 3 power of highest element.",
+  val sphynx = new Creature("highpriest.sphinx", Attack(7), 24,
+	I18n("highpriest.sphinx.description"),
     reaction = new SphinxReaction)
 
-  val puzzle = new Creature("puzzle", Attack(0), 6,
-    "If puzzle was destroyed by enemy creature, sphinx reborns with halved hp.\n" +
-    "If puzzle was destroyed by enemy spell or ability, opponent loses 3 power of highest element.",
+  val puzzle = new Creature("highpriest.puzzle", Attack(0), 6,
+    I18n("highpriest.puzzle.description"),
     reaction = new PuzzleReaction)
 
-  val ouroboros = new Creature("Ouroboros", Attack(6), 38,
-    "At the beginning of owner's turn summons in nearest empty slot serpent of eternity.",
+  val ouroboros = new Creature("highpriest.Ouroboros", Attack(6), 38,
+    I18n("highpriest.Ouroboros.description"),
     effects = effects(OnTurn -> ouro))
 
-  val serpent = new Creature("serpent of eternity", Attack(2), 8,
-    "At the end of opponent's turn serpent dies and heals X hp to owner and Ouroboros (X = its remaining hp).")
+  val serpent = new Creature("highpriest.serpent", Attack(2), 8,
+    I18n("highpriest.serpent.description"))
 
-  val sunStone = new Creature("sun stone", Attack(0), 22,
-    "increases damage from owner spells by 2 and increases Ra's attack by 1 every turn",
+  val sunStone = new Creature("highpriest.sunstone", Attack(0), 22,
+    I18n("highpriest.sunstone.description"),
     mod = Some(new SpellMod(x ⇒ x + 2)),
     effects = effects(OnTurn -> incrRaAttack))
 
-  val guardianMummy = new Creature("guardian mummy", Attack(4), 20)
+  val guardianMummy = new Creature("highpriest.guardianmummy", Attack(4), 20)
 
-  val dragonOfRa = new Creature("Winged dragon of Ra", Attack(6), 45,
-    "When enters the game, summons sun stone in nearest empty slot.",
+  val dragonOfRa = new Creature("highpriest.Wingeddragon", Attack(6), 45,
+    I18n("highpriest.Wingeddragon.description"),
     effects = effects(Direct -> ra))
 
-  val babi = new Creature("Babi", Attack(5), 21,
-    "When opponent's power grows, deals the same damage to opposite creature.",
+  val babi = new Creature("highpriest.Babi", Attack(5), 21,
+    I18n("highpriest.Babi.description"),
     reaction = new BabiReaction)
 
-  val amit = new Creature("Ammit", Attack(9), 39,
-    "When any creature dies, deals to its owner damage equal to his power of that element and gives 1 special power to owner.",
+  val amit = new Creature("highpriest.Ammit", Attack(9), 39,
+    I18n("highpriest.Ammit.description"),
     reaction = new AmitReaction)
 
   val hpSet = List[Card](
-    new Creature("Ancient crocodile", Attack(8), 15, "when attacks, skips next turn (digestion).",
+    new Creature("highpriest.Ancientcrocodile", Attack(8), 15, 
+	  I18n("highpriest.Ancientcrocodile.description"),
       runAttack = new CrocodileAttack),
-    new Creature("Serpopard", Attack(4), 18,
-      "When owner summons special creature, moves in nearest unblocked slot and doubles attack for 1 turn.",
+    new Creature("highpriest.Serpopard", Attack(4), 18,
+      I18n("highpriest.Serpopard.description"),
       reaction = new SerpoReaction),
-    new Creature("Anubite", Attack(5), 20,
-      "When kills creature, summon in nearest empty slot guarding mummy.",
+    new Creature("highpriest.Anubite", Attack(5), 20,
+      I18n("highpriest.Anubite.description"),
       runAttack = new AnubiteAttack),
     babi,
-    Spell("Curse of chaos", "Deals to target creature and its neighbors damage equal to their total attack.",
+    Spell("highpriest.Curseofchaos", 
+	  I18n("highpriest.Curseofchaos.description"),
       inputSpec = Some(SelectTargetCreature),
       effects = effects(Direct -> curse)),
-    Spell("Simooom", "Reduces attack of all enemy creatures to 2.\n" +
-      "They restore 3 attack per turn since next turn.",
+    Spell("highpriest.Simoom",     			
+		I18n("highpriest.Simoom.description"),
       effects = effects(Direct -> simoom)),
     amit,
-    new Creature("Apep", Attack(5), 42, "Attacks all enemies.\n" +
-      "Every turn decreases elemental powers of both players by 1.",
+    new Creature("highpriest.Apep", Attack(5), 42,   
+		I18n("highpriest.Apep.description"),
       effects = effects(OnTurn -> apep, OnEndTurn -> apepOpp),
       runAttack = MultiTargetAttack))
 
-  val HighPriest = House("High Priest", List(
-    new Creature("Sacred scarab", Attack(3), 11,
-      "decreases non-magical damage received by it by 2X\n" +
-      "X = number of its neighbors.",
+  val HighPriest = House("highpriest", List(
+    new Creature("highpriest.Sacredscarab", Attack(3), 11,
+      I18n("highpriest.Sacredscarab.description"),
       reaction = new ScarabReaction),
-    new Creature("Sun priest", Attack(2), 16, "When attacks, deals to all enemy creatures damage equal to owner's lowest power.",
+    new Creature("highpriest.sunpriest", Attack(2), 16, 
+	  I18n("highpriest.sunpriest.description"),
       runAttack = new SunPriestAttack),
     apis,
-    new Creature("Bennu", Attack(5), 21, "If killed by enemy card, attacks opposite slot with tripled attack before death.",
+    new Creature("highpriest.Bennu", Attack(5), 21, 
+	  I18n("highpriest.Bennu.description"),
       reaction = new BennuReaction),
-    Spell("Eye of wajet",
-      "heals to owner and his creatures 1 hp for each revealed enemy card and deals the same damage to all enemies.",
+    Spell("highpriest.EyeofWajet",
+       I18n("highpriest.EyeofWajet.description"),
       effects = effects(Direct -> wajet)),
     sphynx,
     ouroboros,
@@ -102,7 +102,8 @@ object HighPriest {
     effects = List(OnTurn -> hpTurn, OnStart -> init),
     eventListener = Some(new CustomListener(new HPriestEventListener)),
     data = initState,
-    description = "Divine path:\nDepending on whether total level of owner’s fire and earth,  or water and air creatures is higher, his special draw changes becoming Ra’s or Set’s.")
+    description = I18n("highpriest.description")
+	)
 
   HighPriest initCards Houses.basicCostFunc
   HighPriest.initCards(Houses.basicCostFunc, hpSet)

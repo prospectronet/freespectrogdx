@@ -13,12 +13,13 @@ class DescriptionPanel(resources : ScreenResources,
                        descWidth : Float = 350) {
   val panel = new Table()
   val title = new Label("", resources.skin)
-  title setFontScale 1.1f
+  title setFontScale 1.25f
   val subtitle = new Label("", resources.skin)
   val description = new Label("", resources.skin2)
   description setWrap true
   panel align Align.bottomLeft
   panel.add(title).left
+  panel.row()
   panel.add(subtitle).left
   panel.row()
   panel.add(description).left() width descWidth colspan 2
@@ -39,6 +40,7 @@ object Description {
   def cardToDesc(gameState : GameState, playerId : PlayerId, card : Card) = {
     val subtitle = card match {
       case c: Creature ⇒ "Life : " + c.life + "  Attack : " + c.attack.base.getOrElse("X")
+	  case c: Spell ⇒ "Spell"
       case _ ⇒ ""
     }
     (card.label + " ("+card.cost+")", subtitle, card.description(gameState, playerId))
