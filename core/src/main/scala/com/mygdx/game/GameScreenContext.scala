@@ -7,6 +7,8 @@ import priv.util.Utils._
 import priv.util.GuiUtils._
 import priv.sp.I18n
 
+import scala.concurrent.Future
+
 trait GameScreenContext {
   def gameScreen : GameScreen
 
@@ -71,7 +73,9 @@ class LocalGameScreenContext(val gameScreen: GameScreen) extends GameScreenConte
     initInput(gameInit.board.panel, scrollScreen = true){ k : Int =>
       if (k == Input.Keys.F8) {
         Gdx.app.log("input", "give mana")
-        session.giveMeMana()
+        Future {
+          session.giveMeMana()
+        } (scala.concurrent.ExecutionContext.Implicits.global)
         true
       } else if (k == Input.Keys.F7) {
         println(session.state)
