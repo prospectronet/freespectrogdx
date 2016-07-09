@@ -121,7 +121,7 @@ object Utils {
   }
 }
 
-class TVar[A <: AnyRef](richLock: RichLock) {
+class TVar[A <: AnyRef](val richLock: RichLock) {
   import richLock.lock
 
   private var holder = Option.empty[A]

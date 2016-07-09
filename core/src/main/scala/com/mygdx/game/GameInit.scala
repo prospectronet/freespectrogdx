@@ -58,6 +58,10 @@ class GameInit(val screenResources : ScreenResources,
 
   gameResources.gameExecutor submit runnable(session.start())
 
+  def releaseLocks() : Unit = {
+    session.gameLock.release()
+    listener.lock.release()
+  }
 
 }
 

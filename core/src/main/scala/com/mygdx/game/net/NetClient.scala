@@ -7,7 +7,7 @@ import collection._
 import scala.concurrent.Promise
 import scala.util.{Failure, Success}
 import priv.util.Utils.thread
-import com.mygdx.game.{RemoteGameScreenContext, Screens}
+import com.mygdx.game.{GameInit, RemoteGameScreenContext, Screens}
 import priv.sp._
 import priv.util.Log
 
@@ -29,6 +29,7 @@ class NetClient(host : String, port : Int, val user : String,
   val messageQueue = new java.util.concurrent.LinkedBlockingQueue[Any]
   val log     = new Log(this)
   def kryo    = GameKryoInstantiator.kryo
+  var currentGame = Option.empty[RemoteGameScreenContext]
 
   var running = true
   thread("net client") {
@@ -76,12 +77,14 @@ class NetClient(host : String, port : Int, val user : String,
             screenResources.beforeProcess invoke {
               gameScreen.select()
               val opp = new RemoteOpponent(gameResources, this, oppName, opponent, owner, seed)
-              new RemoteGameScreenContext(gameScreen, opp)
+              setGame(new RemoteGameScreenContext(gameScreen, opp))
             }
           case msg => log.debug("unknown msg " + msg)
         }
       case MessageType.ExitDuel =>
         screenResources.beforeProcess.invoke {
+          messageQueue put GameSeed.PoisonPill
+          currentGame foreach (_.gameInit.releaseLocks())
           gameScreen.returnToStart()
         }
       case MessageType.RequestDuel =>
@@ -96,7 +99,7 @@ class NetClient(host : String, port : Int, val user : String,
               screenResources.beforeProcess.invoke {
                 gameScreen.select()
                 val opp = new RemoteOpponent(gameResources, this, seed.name, owner, owner, seed)
-                new RemoteGameScreenContext(gameScreen, opp)
+                setGame(new RemoteGameScreenContext(gameScreen, opp))
               }
             case ChatMessage(chatMsg) => logMsg(chatMsg)
             case ProxyAsk(msg, id) =>
@@ -117,6 +120,11 @@ class NetClient(host : String, port : Int, val user : String,
       case MessageType.RequestFailed =>
         logMsg("request failed")
     }
+  }
+
+  def setGame(context : RemoteGameScreenContext) = {
+    currentGame foreach (_.gameInit.releaseLocks())
+    currentGame = Some(context)
   }
 
   def send(message : Message) = {
@@ -166,6 +174,7 @@ class NetClient(host : String, port : Int, val user : String,
     socket.close()
     logMsg("Disconnected")
     setPlayerList(Nil)
+    messageQueue put GameSeed.PoisonPill
     messageQueue.clear()
     pending.clear()
   }

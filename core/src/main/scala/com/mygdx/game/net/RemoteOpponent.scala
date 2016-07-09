@@ -15,6 +15,8 @@ object GameSeed {
 
     GameSeed(seed, GameDesc(Vector(p1Desc, p2Desc)), state, name, oppName)
   }
+
+  val PoisonPill = new Object
 }
 
 case class GameSeed(seed : Long, desc : GameDesc, gameState : GameState, name : String, oppName : String )
@@ -43,6 +45,7 @@ class RemoteOpponent(
     log.debug("taken " + msg + ", " +  Thread.currentThread().getName)
     msg match {
       case commandOption : Option[Command] => c set Some(commandOption)
+      case GameSeed.PoisonPill => c.richLock.release()
       case _ => println("Unknown msg " + msg)
     }
   }

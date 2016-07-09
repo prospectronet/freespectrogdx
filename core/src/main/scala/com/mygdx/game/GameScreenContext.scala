@@ -12,10 +12,6 @@ import scala.concurrent.Future
 trait GameScreenContext {
   def gameScreen : GameScreen
 
-  def releaseLocks(gameInit : GameInit) = {
-    gameInit.session.gameLock.release()
-    gameInit.listener.lock.release()
-  }
 }
 
 class RemoteGameScreenContext(val gameScreen: GameScreen, opponent : RemoteOpponent) extends GameScreenContext {
@@ -28,7 +24,8 @@ class RemoteGameScreenContext(val gameScreen: GameScreen, opponent : RemoteOppon
   gameInit.userMenu.getButton(I18n("button.quit")) addListener onClick {
     opponent.client send Message(Header(MessageType.ExitDuel))
     opponent.client send Message(Header(MessageType.ListPlayers))
-    releaseLocks(gameInit)
+    opponent.client.messageQueue put GameSeed.PoisonPill
+    gameInit.releaseLocks()
     gameScreen.returnToStart()
   }
 }
@@ -39,7 +36,7 @@ class LocalGameScreenContext(val gameScreen: GameScreen) extends GameScreenConte
 
   def createGame(): GameInit = gameScreen.resetScreen {
     if (currentGame != null) {
-      releaseLocks(currentGame)
+      currentGame.releaseLocks()
     }
     val gameInit = new GameInit(screenResources, gameResources, new Local(gameResources))
     screenResources.disconnectIfNeeded()
@@ -48,7 +45,7 @@ class LocalGameScreenContext(val gameScreen: GameScreen) extends GameScreenConte
       currentGame = createGame()
     }
     gameInit.userMenu.getButton(I18n("button.quit")) addListener onClick {
-      releaseLocks(currentGame)
+      currentGame.releaseLocks()
       gameScreen.returnToStart()
     }
     localInit(gameInit)
