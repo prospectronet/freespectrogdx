@@ -40,7 +40,7 @@ object LostChurch {
 
   LostChurch initCards Houses.basicCostFunc
   LostChurch.addAdditionalCards(prisoner, enragedPrisoner, windOfOppression, darkMonk)
-  windOfOppression.cost = 4
+  windOfOppression.cost = 3
   windOfOppression.cardIndex = 4
   darkMonk.cost = 3
   darkMonk.cardIndex = 3

@@ -36,7 +36,7 @@ class NetPanel(
   table.row()
   table.add(chat).colspan(2).fillX().pad(5)
   table.row()
-  table.add(new Label("(Request or accept a duel by sending: /duel playername)", skin))
+  table.add(new Label(I18n("netduel.message"), skin))
 
   val panel = table
   table.pad(5).bottom().pack()

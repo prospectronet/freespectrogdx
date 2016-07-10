@@ -168,12 +168,11 @@ class SB {
     draineds foreach { slot ⇒
       slot.value foreach { s ⇒
         healeds.find(_.num == 5 - slot.num) foreach { h ⇒
-          val drainAmount = math.ceil(s.card.life / 10f).intValue
-          val d = Damage(drainAmount, env, isAbility = true)
+          val d = Damage(math.ceil(s.card.life / 10f).intValue, env, isAbility = true)
           slot drain d
           player.houses.incrMana(1, s.card.houseIndex)
           hasDrained = true
-          h heal drainAmount
+          h heal 2
         }
       }
     }

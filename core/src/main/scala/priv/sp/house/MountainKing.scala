@@ -52,7 +52,7 @@ class MountainKing {
 
   def soldierEffect = { env: Env ⇒
     import env._
-    val bonus = AttackAdd(3)
+    val bonus = AttackAdd(2)
     getOwnerSelectedSlot().filledAdjacents foreach (_.attack.add(bonus))
     player addEffect (OnEndTurn -> new CountDown(1, { e ⇒
       e.player.slots(selected).filledAdjacents foreach (_.attack.removeFirst(bonus))

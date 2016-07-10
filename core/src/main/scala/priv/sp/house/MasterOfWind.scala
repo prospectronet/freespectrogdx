@@ -58,7 +58,7 @@ object MasterOfWind {
     val card = slot.get.card
     if (card.houseIndex != 4) {
       slot.stun()
-      player.houses.incrMana(card.cost / 2, card.houseIndex)
+      player.houses.incrMana(card.cost / 3, card.houseIndex)
     }
   }
 

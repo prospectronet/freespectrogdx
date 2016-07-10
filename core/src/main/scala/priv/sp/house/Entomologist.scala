@@ -16,7 +16,8 @@ object Entomologist extends ChangeTarget {
       reaction = new FireBeetleReaction,
       effects = effects(Direct -> beetle)),
     new Creature("entomologist.moth", Attack(3), 14, I18n("entomologist.moth.description"), effects = effects(OnTurn -> damage(1, isAbility = true), OnTurn -> focus(damageCreatures(1, isAbility = true))), reaction = new MothReaction),
-    Spell("entomologist.hivemind", I18n("entomologist.hivemind.description"), inputSpec = Some(SelectTargetCreature), effects = effects(Direct -> hivemind)),
+    //Spell("entomologist.hivemind", I18n("entomologist.hivemind.description"), inputSpec = Some(SelectTargetCreature), effects = effects(Direct -> hivemind)),
+	Spell("entomologist.hivemind", I18n("entomologist.hivemind.description"), effects = effects(Direct -> hivemindHeal)),
     Spell("entomologist.locust", I18n("entomologist.locust.description"), inputSpec = Some(SelectTargetCreature), effects = effects(Direct -> locust)),
     giantAnt,
     assassinWasp,
@@ -60,6 +61,19 @@ object Entomologist extends ChangeTarget {
   }
 
   def hivemind = changeTarget
+  
+  def hivemindHeal = { env: Env ⇒
+    import env._
+    val ownMaxMana = getOwnMaxMana(player.getHouses)
+    player.slots healCreatures (ownMaxMana)
+  }
+
+  
+  def getOwnMaxMana(houses : PlayerState.HousesType) = {
+	val own = houses.reduceLeft((h1, h2) ⇒ if (h1.mana > h2.mana) h1 else h2).mana
+	math.max(0, own)
+  }
+
 
   def locust = { env: Env ⇒
     import env._
@@ -74,7 +88,11 @@ object Entomologist extends ChangeTarget {
 
   class GiantReaction extends Reaction {
     override def selfProtect(d: Damage) = {
-      d.copy(amount = math.max(0, d.amount - 2))
+	  if (!d.isSpell) {
+		d.copy(amount = math.max(0, d.amount - 2))
+	  }
+	  else
+		d
     }
     override def cleanUp() {
       selected.player removeDescMod LowerGiantCostMod
@@ -133,6 +151,7 @@ object Entomologist extends ChangeTarget {
       slot add insect
       slot.focus(blocking = false)
     }
+	effects(Direct -> damage(5, isSpell = true))
   }
 
   class InsectReaction extends Reaction {
@@ -166,14 +185,14 @@ object Entomologist extends ChangeTarget {
     }
 
     def bridle(oppCard : Card) : Unit = {
-      selected.otherPlayer.houses.incrGrowth(-1, oppCard.houseIndex)
+      selected.otherPlayer.houses.incrGrowth(-2, oppCard.houseIndex)
       selected setData oppCard
     }
 
     def unbridle() : Unit = {
       selected.value flatMap (s => Option(s.data)) foreach { data =>
         val card = data.asInstanceOf[Card]
-        selected.otherPlayer.houses.incrGrowth(1, card.houseIndex)
+        selected.otherPlayer.houses.incrGrowth(2, card.houseIndex)
         selected.setData(null)
       }
     }

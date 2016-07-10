@@ -23,7 +23,7 @@ class FairyKnight {
   val ohgorynych = new Creature("fairy.1head", Attack(3), 15, reaction = new OHGoryReaction)
 
   val Fairy = House("fairy", List(
-    new Creature("fairy.lesovik", Attack(4), 14,
+    new Creature("fairy.lesovik", Attack(4), 18,
                  I18n("fairy.lesovik.description"),
                  effects = effects(Direct -> lesovik), reaction = new LesovikReaction),
     new Creature("fairy.kikimora", Attack(3), 13,

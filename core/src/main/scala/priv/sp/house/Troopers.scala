@@ -6,15 +6,15 @@ class Trooper {
   import CardSpec._
   import GameCardEffect._
 
-  val Trooper = House("Troopers", List(
-    Spell("Conscription", "Increase troopers mana by 1", effects = effects(Direct -> addMana(1, 4))),
-    new Creature("Marine", Attack(4), 17, "Deals 4 damage to summoned opponent creatures", reaction = new MarineReaction),
-    new Creature("Barracks", Attack(2), 17, "Increase troopers mana growth by 1", effects = effects(OnTurn -> addMana(1, 4))),
-    new Creature("Wraith", Attack(4), 24, "Every turn deals 2 damage to opponent creatures", effects = effects(OnTurn -> focus(damageCreatures(2, isAbility = true)))),
-    new Creature("Goliath", Attack(6), 20, "Immune to spell and absorb 1 damage", reaction = new GoliathReaction),
-    new Creature("SiegeTank", Attack(8), 29, "Every turn deals 8 damage to opponent creature with most life", effects = effects(OnTurn -> focus(siege))),
-    Spell("NuclearMissile", "Deals 19 damage to opponent creatures", effects = effects(Direct -> damageCreatures(19, isSpell = true))),
-    new Creature("ScienceVessel", Attack(6), 60, "When summoned deals 12 damage to opponent creatures", effects = effects(Direct -> damageCreatures(12, isAbility = true)))))
+  val Trooper = House("troopers", List(
+    Spell("troopers.Conscription", I18n("troopers.Conscription.description"), effects = effects(Direct -> addMana(1, 4))),
+    new Creature("troopers.Marine", Attack(4), 17, I18n("troopers.Marine.description"), reaction = new MarineReaction),
+    new Creature("troopers.Barracks", Attack(2), 17, I18n("troopers.Barracks.description"), effects = effects(OnTurn -> addMana(1, 4))),
+    new Creature("troopers.Wraith", Attack(4), 24, I18n("troopers.Wraith.description"), effects = effects(OnTurn -> focus(damageCreatures(2, isAbility = true)))),
+    new Creature("troopers.Goliath", Attack(6), 20, I18n("troopers.Goliath.description"), reaction = new GoliathReaction),
+    new Creature("troopers.SiegeTank", Attack(8), 29, I18n("troopers.SiegeTank.description"), effects = effects(OnTurn -> focus(siege))),
+    Spell("troopers.NuclearMissile", I18n("troopers.NuclearMissile.description"), effects = effects(Direct -> damageCreatures(19, isSpell = true))),
+    new Creature("troopers.ScienceVessel", Attack(6), 60, I18n("troopers.ScienceVessel.description"), effects = effects(Direct -> damageCreatures(12, isAbility = true)))))
 
   val marine = Trooper.cards(1)
   Trooper initCards { i: Int ⇒ if (i == 0) i else i + 1 }

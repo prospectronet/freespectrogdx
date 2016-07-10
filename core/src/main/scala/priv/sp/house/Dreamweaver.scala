@@ -7,10 +7,10 @@ import GameCardEffect._
 
 class Dreamweaver {
 
-  val roc = new Creature("dreamweaver.roc", AttackSources(Some(6), Vector(RocAttackSource)), 17,
-    "dreamweaver.roc.description")
+  val roc = new Creature("dreamweaver.roc", AttackSources(Some(6), Vector(RocAttackSource)), 21,
+    I18n("dreamweaver.roc.description"))
 
-  val castle = new Creature("dreamweaver.castle", Attack(2), 37,
+  val castle = new Creature("dreamweaver.castle", Attack(2), 30,
     I18n("dreamweaver.castle.description"),
     runAttack = MultiTargetAttack, reaction = new CastleReaction)
 
@@ -28,7 +28,7 @@ class Dreamweaver {
       I18n("dreamweaver.guide.description"),
       effects = effects(Direct -> guide)),
 
-    new Creature("dreamweaver.sword", AttackSources(Some(4), Vector(SwordAttackSource)), 28,
+    new Creature("dreamweaver.sword", AttackSources(Some(3), Vector(SwordAttackSource)), 28,
       I18n("dreamweaver.sword.description"),
       reaction = new SwordReaction, runAttack = new SwordAttack),
 
@@ -38,7 +38,7 @@ class Dreamweaver {
 
     castle,
 
-    new Creature("dreamweaver.mare", AttackSources(Some(5), Vector(EtherealAttackSource)), 44,
+    new Creature("dreamweaver.mare", AttackSources(Some(3), Vector(EtherealAttackSource)), 44,
       I18n("dreamweaver.mare.description"),
       effects = effects(Direct -> mare), reaction = new NightmareReaction)),
     eventListener = Some(new CustomListener(new DreamweaverEventListener)))
@@ -66,12 +66,12 @@ class Dreamweaver {
         s heal dp
       }
     }
-    player heal (nbCreatures * 3)
+    player heal (nbCreatures * 2)
   }
 
   def mare = { env: Env ⇒
     import env._
-    val damage = Damage(6 * otherPlayer.slots.slots.count(_.value.isEmpty), env, isAbility = true)
+    val damage = Damage(4 * otherPlayer.slots.slots.count(_.value.isEmpty), env, isAbility = true)
     otherPlayer.slots inflictCreatures damage
   }
 
