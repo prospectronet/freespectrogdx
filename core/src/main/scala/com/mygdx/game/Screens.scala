@@ -39,6 +39,9 @@ class Screens(val game : Game) {
       lastE = None
     } catch {
       case NonFatal(e) =>
+        if (stage.getBatch.isDrawing) {
+          stage.getBatch.end()
+        }
         if (! lastE.contains(e) ) {
           lastE = Some(e)
           e.printStackTrace()
