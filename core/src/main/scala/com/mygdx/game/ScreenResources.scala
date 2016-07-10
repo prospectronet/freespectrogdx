@@ -29,8 +29,10 @@ class ScreenResources(val storage : Storage) extends GraphicResourceBase {
   val batch    = stage.getBatch
   val renderer = new ShapeRenderer()
   val atlas    = new TextureAtlas(Gdx.files.external(".freespectro/themes/"+storage.cardTheme+"/pack/images.pack.atlas"))
-  var skin     = if (I18n.isRussian) loadSkin("font3") else loadSkin("font")
-  var skin2    = if (I18n.isRussian) loadSkin("font3") else loadSkin("font2")
+
+  val commonSkin = loadSkin("font3")
+  var skin     = if (I18n.isRussian) commonSkin else loadSkin("font")
+  var skin2    = if (I18n.isRussian) commonSkin else loadSkin("font2")
   val engine   = new Engine()
   val renderSystem   = new RenderSystem(batch, stage.getCamera)
   val scriptSystem   = new ScriptSystem()

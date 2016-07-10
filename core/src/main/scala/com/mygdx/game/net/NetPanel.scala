@@ -18,7 +18,7 @@ class NetPanel(
   val name = new TextField(screens.storage.userName getOrElse System.getProperty("user.name"), skin)
   val host = new TextField("172.99.78.51", skin)
   val port = new TextField("12345", skin)
-  val logs = new TextArea("", skin)
+  val logs = new TextArea("", screenResources.commonSkin)
   val chat = new TextField("" , skin)
   val nbRows = 20
   logs setPrefRows nbRows
