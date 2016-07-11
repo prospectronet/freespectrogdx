@@ -70,6 +70,7 @@ class NetClient(host : String, port : Int, val user : String,
               logMsg(msg)
               Thread.sleep(1000)
             }
+            messageQueue.clear()
             // a new game has been requested
             val seed = GameSeed.create(gameResources, user, oppName, oppHouses)
             // send the seed to the opponent
@@ -105,6 +106,7 @@ class NetClient(host : String, port : Int, val user : String,
             case ProxyAsk(msg, id) =>
                 msg match {
                   case _ : AskOpponentInfo =>
+                    messageQueue.clear()
                     proxyMessage(ProxyAnswer(id,
                       OpponentInfo(user, gameResources.playerChoices(owner).map(_.houseId), screenResources.storage.checksum)))
                   case _ => log.debug("unknown msg " + msg)
