@@ -102,8 +102,10 @@ class CardShuffler(cardModel: CardModel) extends CpHelper {
         add(s > 20)
         if (house.house.houseIndex != 0) {
           house.cards.reduce { (x, y) =>
-            if (Random.nextFloat() > 0.1){
+            if (Random.nextFloat() > 0.01) {
               add(y.minus(x) > 1)
+            } else {
+              add(y.minus(x) === 1)
             }
             y
           }
@@ -132,6 +134,8 @@ class CardShuffler(cardModel: CardModel) extends CpHelper {
     add(contains(5, fire) ==> notContains(3, earth))
     add(contains(1, water) ==> notContains(9, earth))
     add(contains(5, earth) ==> notContains(6, earth))
+    add(! (contains(7, air) && contains(9, earth) && contains(8, water)))
+    add(contains(7, air) ==> (contains(5, water) || contains(3, water) || contains(11, fire)))
 
     search {
       binaryFirstFail(vars, getRandom _)
@@ -198,6 +202,10 @@ class ManaShuffler(model: ManaModel, pDesc: PlayerDesc, isFirst: Boolean) {
       case (idx, cost) ⇒
         add(manas(idx) < 7)
         add(manas(idx) >= (if (isFirst) cost else (cost - 1)))
+    }
+    // ban fire 10 + water 3 + mana == 6
+    if (pDesc.houses(0).cards.exists(_.cost == 10) && pDesc.houses(1).cards.exists(_.cost == 3)) {
+      add(manas(0) < 6)
     }
 
     search {
