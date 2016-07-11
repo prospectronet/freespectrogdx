@@ -134,7 +134,7 @@ class CardShuffler(cardModel: CardModel) extends CpHelper {
     add(contains(5, fire) ==> notContains(3, earth))
     add(contains(1, water) ==> notContains(9, earth))
     add(contains(5, earth) ==> notContains(6, earth))
-    add(! (contains(7, air) && contains(9, earth) && contains(8, water)))
+    add(!(contains(7, air) && (getMassDamage !== 1)))
     add(contains(7, air) ==> (contains(5, water) || contains(3, water) || contains(11, fire)))
 
     search {
@@ -176,6 +176,12 @@ class CardShuffler(cardModel: CardModel) extends CpHelper {
     contains(2, earth),
     contains(4, earth),
     contains(11, earth)))
+
+  def getMassDamage = sum(List(
+    contains(11, fire),
+    contains(9, earth),
+    contains(8, water)
+  ))
 }
 
 class ManaModel(val cardModel: CardModel, val cp: CPSolver = CPSolver()) {
