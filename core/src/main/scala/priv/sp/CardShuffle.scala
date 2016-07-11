@@ -80,7 +80,14 @@ class HModel(val house: House, spHouses: Houses, getCardRange: GetCardRange)(imp
       :: CPIntVar(c2)
       :: CPIntVar(c3) :: Nil)
   } else {
-    (0 to 3).map(i ⇒ CPIntVar(range))
+    val idx = house.houseIndex
+    val cardRanges = List(
+      1 to (if (idx == 0 || idx == 3) 4 else 3),
+      2 to (if (idx == 0) 9 else 8),
+      (if (idx == 0) 5 else if (idx==3) 6 else 4) to 11,
+      (if (idx == 0 || idx == 3) 10 else 9) to 12)
+    val rng = range
+    (0 to 3).map(i ⇒ CPIntVar(cardRanges(i) filter rng.contains))
   }
 
   def getSolveds: Set[Int] = cards.map(_.value)(breakOut)
