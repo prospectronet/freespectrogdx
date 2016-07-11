@@ -83,6 +83,7 @@ class HModel(val house: House, spHouses: Houses, getCardRange: GetCardRange)(imp
     (0 to 3).map(i ⇒ CPIntVar(range))
   }
 
+	  
   def getSolveds: Set[Int] = cards.map(_.value)(breakOut)
   private def range = getCardRange(house)
 }
@@ -132,8 +133,16 @@ class CardShuffler(cardModel: CardModel) extends CpHelper {
     add(contains(5, fire) ==> notContains(3, earth))
     add(contains(1, water) ==> notContains(9, earth))
     add(contains(5, earth) ==> notContains(6, earth))
+	
+	if(houses(4).house == "Wind"){
+		add(contains(5, special) ==> notContains(12, fire)) // plus 50% + dragon = too much
+	}
 
-    search {
+	if(houses(4).house == "Antimancer"){
+		add(contains(5, special) ==> notContains(12, water)) // don't need to protect astral guard from spells
+	}
+    
+	search {
       binaryFirstFail(vars, getRandom _)
     }
     var playerDesc: PlayerDesc = null
