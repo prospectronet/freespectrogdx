@@ -103,8 +103,8 @@ class CardShuffler(cardModel: CardModel) extends CpHelper {
         add(s > 20)
         if (house.house.houseIndex != 0) {
           house.cards.reduce { (x, y) =>
-            if (Random.nextFloat() > 0.1){
-              add(y.minus(x) > 1)
+            if (Random.nextFloat() > 0.01){
+              add(y.minus(x) = 1)
             }
             y
           }
