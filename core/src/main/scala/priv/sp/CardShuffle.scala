@@ -80,8 +80,15 @@ class HModel(val house: House, spHouses: Houses, getCardRange: GetCardRange)(imp
       :: CPIntVar(c2)
       :: CPIntVar(c3) :: Nil)
   } else {
-    (0 to 3).map(i ⇒ CPIntVar(range))
-  }
+    val idx = house.houseIndex
+    val cardRanges = List(
+      1 to (if (idx == 0 || idx == 3) 4 else 3),
+      2 to (if (idx == 0) 9 else 8),
+      (if (idx == 0) 5 else if (idx==3) 6 else 4) to 11,
+      (if (idx == 0 || idx == 3) 10 else 9) to 12)
+    val rng = range
+    (0 to 3).map(i ⇒ CPIntVar(cardRanges(i) filter rng.contains))
+  }	
 
 	  
   def getSolveds: Set[Int] = cards.map(_.value)(breakOut)
@@ -135,6 +142,8 @@ class CardShuffler(cardModel: CardModel) extends CpHelper {
     add(contains(5, fire) ==> notContains(3, earth))
     add(contains(1, water) ==> notContains(9, earth))
     add(contains(5, earth) ==> notContains(6, earth))
+	add(!(contains(7, air) && (getMassDamage !== 1)))
+	add(contains(7, air) ==> (contains(5, water) || contains(3, water) || contains(11, fire)))
 	
 	if(houses(4).house == "Wind"){
 		add(contains(5, special) ==> notContains(12, fire)) // plus 50% + dragon = too much
@@ -145,10 +154,6 @@ class CardShuffler(cardModel: CardModel) extends CpHelper {
 	}
     
 	search {
-    add(! (contains(7, air) && contains(9, earth) && contains(8, water)))
-    add(contains(7, air) ==> (contains(5, water) || contains(3, water) || contains(11, fire)))
-
-
       binaryFirstFail(vars, getRandom _)
     }
     var playerDesc: PlayerDesc = null
@@ -187,6 +192,12 @@ class CardShuffler(cardModel: CardModel) extends CpHelper {
     contains(2, earth),
     contains(4, earth),
     contains(11, earth)))
+	
+  def getMassDamage = sum(List(
+    contains(11, fire),
+    contains(9, earth),
+    contains(8, water)
+  ))
 }
 
 class ManaModel(val cardModel: CardModel, val cp: CPSolver = CPSolver()) {
