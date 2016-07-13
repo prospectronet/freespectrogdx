@@ -40,7 +40,7 @@ class GameSettings(resources : GameResources, screenResources : ScreenResources)
     val choiceCheckBoxes : Map[String, CheckBox] = specials.map(_.label)
       .map { choice =>
         val checkbox = new CheckBox(choice, screenResources.skin2)
-        table add checkbox
+        table add(checkbox).left()
         n += 1
         if (n % 2 == 0) table.row()
         (choice, checkbox)

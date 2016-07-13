@@ -103,10 +103,10 @@ object DarkPriest {
   }
   def blackMass = { env: Env ⇒
     import env._
+	player.slots(selected).destroy()
     val slots = otherPlayer.slots.filleds
     val x = getBlackMassX(otherPlayer.slots.value)
     otherPlayer.slots inflictCreatures Damage(x, env, isSpell = true)
-    player.slots(selected).destroy()
   }
   def getBlackMassX(slots : PlayerState.SlotsType) = {
     4 * (slots.values.map { s ⇒ s.card.houseId }(collection.breakOut) : List[Int]).distinct.size

@@ -33,6 +33,7 @@ class ScreenResources(val storage : Storage) extends GraphicResourceBase {
   val commonSkin = loadSkin("font3")
   var skin     = if (I18n.isRussian) commonSkin else loadSkin("font")
   var skin2    = if (I18n.isRussian) commonSkin else loadSkin("font2")
+  var skin_small = loadSkin("font3_small")
   val engine   = new Engine()
   val renderSystem   = new RenderSystem(batch, stage.getCamera)
   val scriptSystem   = new ScriptSystem()

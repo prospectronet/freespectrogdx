@@ -87,6 +87,7 @@ class HModel(val house: House, spHouses: Houses, getCardRange: GetCardRange)(imp
       (if (idx == 0) 5 else if (idx==3) 6 else 4) to 11,
       (if (idx == 0 || idx == 3) 10 else 9) to 12)
     val rng = range
+	println("range " + idx + " " + cardRanges)
     (0 to 3).map(i ⇒ CPIntVar(cardRanges(i) filter rng.contains))
   }	
 
@@ -143,7 +144,8 @@ class CardShuffler(cardModel: CardModel) extends CpHelper {
     add(contains(1, water) ==> notContains(9, earth))
     add(contains(5, earth) ==> notContains(6, earth))
 	add(!(contains(7, air) && (getMassDamage !== 1)))
-	add(contains(7, air) ==> (contains(5, water) || contains(3, water) || contains(11, fire)))
+	add(!(contains(7, air) && (getPhoenixSupporters !== 1)))
+	
 	
 	if(houses(4).house == "Wind"){
 		add(contains(5, special) ==> notContains(12, fire)) // plus 50% + dragon = too much
@@ -197,6 +199,12 @@ class CardShuffler(cardModel: CardModel) extends CpHelper {
     contains(11, fire),
     contains(9, earth),
     contains(8, water)
+  ))
+  
+  def getPhoenixSupporters = sum(List(
+    contains(11, fire),
+    contains(3, water),
+    contains(5, water)
   ))
 }
 
