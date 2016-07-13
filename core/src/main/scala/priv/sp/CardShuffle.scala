@@ -107,12 +107,12 @@ class CardShuffler(cardModel: CardModel) extends CpHelper {
         val s = sum(cards)
         add(s < 30)
         add(s > 20)
-        if (house.house.houseIndex != 0) {
+        if (house.house.houseIndex != 0) { // this is a simplification of fire rule
           house.cards.reduce { (x, y) =>
-            if (Random.nextFloat() > 0.01) {
+            if (Random.nextFloat() > 0.05) { // this is approximation of 1% rule
               add(y.minus(x) > 1)
             } else {
-              add(y.minus(x) === 1)
+              add(y.minus(x) > 0)
             }
             y
           }
