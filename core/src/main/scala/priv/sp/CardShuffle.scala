@@ -87,11 +87,9 @@ class HModel(val house: House, spHouses: Houses, getCardRange: GetCardRange)(imp
       (if (idx == 0) 5 else if (idx==3) 6 else 4) to 11,
       (if (idx == 0 || idx == 3) 10 else 9) to 12)
     val rng = range
-	println("range " + idx + " " + cardRanges)
     (0 to 3).map(i ⇒ CPIntVar(cardRanges(i) filter rng.contains))
-  }	
+  }
 
-	  
   def getSolveds: Set[Int] = cards.map(_.value)(breakOut)
   private def range = getCardRange(house)
 }
@@ -109,12 +107,12 @@ class CardShuffler(cardModel: CardModel) extends CpHelper {
         val s = sum(cards)
         add(s < 30)
         add(s > 20)
-        if (house.house.houseIndex != 0) {
+        if (house.house.houseIndex != 0) { // this is a simplification of fire rule
           house.cards.reduce { (x, y) =>
-            if (Random.nextFloat() > 0.01) {
+            if (Random.nextFloat() > 0.05) { // this is approximation of 1% rule
               add(y.minus(x) > 1)
             } else {
-              add(y.minus(x) === 1)
+              add(y.minus(x) > 0)
             }
             y
           }
@@ -156,6 +154,7 @@ class CardShuffler(cardModel: CardModel) extends CpHelper {
 	}
     
 	search {
+
       binaryFirstFail(vars, getRandom _)
     }
     var playerDesc: PlayerDesc = null
@@ -194,18 +193,18 @@ class CardShuffler(cardModel: CardModel) extends CpHelper {
     contains(2, earth),
     contains(4, earth),
     contains(11, earth)))
-	
   def getMassDamage = sum(List(
     contains(11, fire),
     contains(9, earth),
     contains(8, water)
   ))
-  
+
   def getPhoenixSupporters = sum(List(
     contains(11, fire),
     contains(3, water),
     contains(5, water)
   ))
+
 }
 
 class ManaModel(val cardModel: CardModel, val cp: CPSolver = CPSolver()) {
