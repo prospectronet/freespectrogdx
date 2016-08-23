@@ -7,26 +7,26 @@ object LostChurch {
   import CardSpec._
   import GameCardEffect._
 
-  val liberatorLife = 15
+  val liberatorLife = 26
 
   val prisoner = new Creature("disciples.prisoner", Attack(2), 10, I18n("disciples.prisoner.description"), reaction = new PrisonerReaction, runAttack = new PrisonerAttack)
   val enragedPrisoner = new Creature("disciples.enraged", Attack(6), 35, I18n("disciples.enraged.description"), reaction = new PrisonerReaction, status = runFlag, runAttack = new PrisonerAttack)
   val windOfOppression = Spell("disciples.wind", I18n("disciples.wind.description"), effects = effects(Direct -> oppress))
-  val darkMonk = new Creature("disciples.monk", Attack(2), 13, I18n("disciples.monk.description"),
+  val darkMonk = new Creature("disciples.monk", Attack(2), 18, I18n("disciples.monk.description"),
     effects = effects(Direct -> guardFire), reaction = new DarkMonkReaction)
   val preacher = new Creature("disciples.preacher", Attack(4), 13, I18n("disciples.preacher.description"),
-    effects = effects(OnTurn -> addMana(1, 4)), reaction = new PreacherReaction)
-  val falseProphet : Creature = new Creature("disciples.prophet", Attack(4), 14, I18n("disciples.prophet.description"),
-    reaction = new FalseProphetReaction, effects = effects(Direct -> prophetize))
-  val astralEscape = new Creature("disciples.escape", Attack(4), 30, I18n("disciples.escape.description"), reaction = new AstralEscapeReaction)
-  val scarecrow : Creature = new Creature("disciples.scarecrow", Attack(7), 25,
+    effects = effects(OnTurn -> addMana(2, 4)), reaction = new PreacherReaction)
+  val falseProphet : Creature = new Creature("disciples.prophet", Attack(4), 23, I18n("disciples.prophet.description"),
+    reaction = new FalseProphetReaction, effects = effects(Direct -> prophetize, OnTurn -> focus(prophetizeOnTurn)))
+  val astralEscape = new Creature("disciples.escape", Attack(3), 30, I18n("disciples.escape.description"), reaction = new AstralEscapeReaction)
+  val scarecrow : Creature = new Creature("disciples.scarecrow", Attack(9), 25,
     I18n("disciples.scarecrow.description"),
     effects = effects(Direct -> scare), inputSpec = Some(SelectOwner(openOrPrisoner)), reaction = new ScarecrowReaction)
-  val liberator = new Creature("disciples.liberator", Attack(3), liberatorLife, I18n.bundle.format("disciples.liberator.description", liberatorLife.toString), reaction = new LiberatorReaction, effects = effects(Direct -> focus(deliverPrisoner)))
+  val liberator = new Creature("disciples.liberator", Attack(2), liberatorLife, I18n.bundle.format("disciples.liberator.description", liberatorLife.toString), reaction = new LiberatorReaction, effects = effects(Direct -> focus(deliverPrisoner)))
 
   val LostChurch = new House("disciples", List(
     Spell("disciples.drug", I18n("disciples.drug.description"),
-      effects = effects(Direct -> speedDrug)),
+      effects = effects(Direct -> speedDrug, Direct -> damage(3, isSpell = true))),
     preacher,
     falseProphet,
     astralEscape,
@@ -38,9 +38,11 @@ object LostChurch {
     eventListener = Some(new CustomListener(new LCEventListener)),
     description = I18n("disciples.description"))
 
-  LostChurch initCards Houses.basicCostFunc
+  LostChurch initCards { i: Int ⇒ if (i == 0) i else i + 1 }
+  //LostChurch initCards Houses.basicCostFunc
+  
   LostChurch.addAdditionalCards(prisoner, enragedPrisoner, windOfOppression, darkMonk)
-  windOfOppression.cost = 3
+  windOfOppression.cost = 1
   windOfOppression.cardIndex = 4
   darkMonk.cost = 3
   darkMonk.cardIndex = 3
@@ -123,8 +125,14 @@ object LostChurch {
   }
   def prophetize = { env: Env ⇒
     import env._
-    player.houses.incrMana(2, 0, 1, 2, 3)
-    player.addDescMod(IncrBasicCostMod, falseProphetAbility)
+    player.houses.incrMana(2, 0, 1, 2, 3, 4)
+    //player.addDescMod(IncrBasicCostMod, falseProphetAbility)
+	player.addDescMod(falseProphetAbility)
+  }
+  
+  def prophetizeOnTurn = { env: Env ⇒
+    import env._
+    player inflict Damage(3, env, isAbility = true)
   }
 
   def scare = { env: Env ⇒
@@ -175,19 +183,30 @@ object LostChurch {
   def speedDrug = { env: Env ⇒
     import env._
     player.slots foreach (_.attack add LCAttackBonus(env.player.id))
-    player.slots inflictCreatures Damage(4, env, isSpell = true)
+    player.slots inflictCreatures Damage(1, env, isSpell = true)
+	
+	
+	player addEffect (OnEndTurn -> new speedDrugRemove)
   }
+  
+   class speedDrugRemove extends Function[Env, Unit] {
+    def apply(env: Env) {
+      val bonus = LCAttackBonus(env.player.id)
+    env.player.slots foreach { _.attack removeAny bonus }
+    }
+  }
+  
 
   val maddenBonus = AttackAdd(1)
   def madden = { env: Env ⇒
     import env._
     otherPlayer.slots foreach { slot ⇒
-      val d = Damage(8, env, isSpell = true)
+      val d = Damage(15, env, isSpell = true)
       slot.inflict(d)
       if (slot.value.isDefined) {
         slot.attack add maddenBonus
       } else {
-        player heal 3
+        player heal 5
       }
     }
     player.slots foreach { _.attack add maddenBonus }
@@ -197,7 +216,7 @@ object LostChurch {
     focus()
     otherPlayer.slots foreach { slot ⇒
       if (slot.num != selected) {
-        slot inflict Damage(math.abs(slot.num - selected), env, isAbility = true)
+        slot inflict Damage(2 + math.abs(slot.num - selected), env, isAbility = true)
       }
     }
   }
@@ -227,8 +246,9 @@ object LostChurch {
         player.houses.incrMana(-1, highs: _*)
         player.houses.incrMana(1, 4)
       }
-      val bonus = LCAttackBonus(dead.player.id)
-      player.slots foreach { _.attack removeAny bonus }
+	  //Эффект пропадает при гибели узника.
+      //val bonus = LCAttackBonus(dead.player.id)
+      //player.slots foreach { _.attack removeAny bonus }
     }
   }
 
@@ -306,6 +326,7 @@ case object IncrBasicCostMod extends DescMod {
   def apply(house: House, cards: Vector[CardDesc]): Vector[CardDesc] = {
     if (house.houseIndex == 4) cards
     else cards.map(c ⇒ c.copy(cost = c.cost + 1))
+	//cards.map(c ⇒ c.copy(cost = c.cost + 1))
   }
 }
 case object IncrFireCostMod extends DescMod {
@@ -319,10 +340,10 @@ case class LCAttackBonus(player: PlayerId) extends AttackFunc { def apply(attack
 
 class FalseProphetReaction extends Reaction {
   final override def onMyDeath(dead: Dead) = {
-    dead.player.houses.incrMana(-1, 0, 1, 2, 3)
+    dead.player.houses.incrMana(-1, 0, 1, 2, 3, 4)
   }
   final override def cleanUp() = {
-    selected.player removeDescMod IncrBasicCostMod
+    //selected.player removeDescMod IncrBasicCostMod
   }
 }
 

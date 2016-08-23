@@ -16,8 +16,10 @@ class SB {
       env.otherPlayer.slots(env.selected) inflict Damage(2, env, isAbility = true)
     }))
   val deathLetter = new Creature("snowblood.letter", Attack(0), 3, I18n("snowblood.letter.description"), reaction = new DLReaction)
-  val maiko = new Creature("snowblood.maiko", Attack(2), 13,
-    I18n("snowblood.maiko.description"), effects = effects(Direct -> maikoEffect), reaction = new MaikoReaction)
+  val maiko = new Creature("snowblood.maiko", Attack(2), 20,
+    I18n("snowblood.maiko.description"), 
+	mod = Some(new SpellMod(x ⇒ x + 1)),
+	effects = effects(Direct -> maikoEffect), reaction = new MaikoReaction)
 
   val SB = House("snowblood", List(
     new Creature("snowblood.tracker", Attack(3), 14, I18n("snowblood.tracker.description"), reaction = new TrackerReaction, data = java.lang.Boolean.FALSE, effects = effects(Direct -> initDataFalse)),
@@ -27,14 +29,14 @@ class SB {
       I18n("snowblood.echo.description"), effects = effects(Direct -> echo)),
     new Creature("snowblood.kojiro", Attack(5), 27,
       I18n("snowblood.kojiro.description"), status = runFlag, effects = effects(OnTurn -> kojiro), inputSpec = Some(SelectOwnerCreature)),
-    new Creature("snowblood.guide", Attack(5), 26,
+    new Creature("snowblood.guide", Attack(10), 26,
       I18n("snowblood.guide.description"),
       reaction = new GuideReaction,
       data = java.lang.Boolean.FALSE,
       effects = effects(Direct -> initDataFalse)),
     new Creature("snowblood.janus", Attack(6), 25,
       I18n("snowblood.janus.description"), effects = effects(OnTurn -> janus)),
-    new Creature("snowblood.amaterasu", Attack(7), 30, I18n("snowblood.amaterasu.description"), effects = effects(Direct -> amaterasu), reaction = new AmaterasuReaction)),
+    new Creature("snowblood.amaterasu", Attack(7), 61, I18n("snowblood.amaterasu.description"), effects = effects(Direct -> amaterasu), reaction = new AmaterasuReaction)),
     eventListener = Some(new CustomListener(new SBEventListener)))
 
   SB initCards Houses.basicCostFunc
@@ -66,7 +68,37 @@ class SB {
         f(env)
       }
     }
+	//player addTransition WaitPlayer(playerId, "Echo phase") // было + 1 доп действие
+	 env.otherPlayer addDescMod SkipTurn
+	 env.otherPlayer addEffectOnce (OnEndTurn -> new Unfreeze(true))
+	 
   }
+  
+ class Unfreeze(chain: Boolean) extends Function[Env, Unit] {
+    def apply(env: Env) {
+      import env._
+      player removeDescMod SkipTurn
+      player removeEffect (_.isInstanceOf[Unfreeze])
+	  
+	  if (chain) {
+        otherPlayer addDescMod HideEchoMod
+        otherPlayer addEffectOnce (OnEndTurn -> UnMod(HideEchoMod))
+      }
+    }
+  }
+  
+  val echoCard = SB.cards(3)
+  case object HideEchoMod extends DescMod {
+	  def apply(house: House, cards: Vector[CardDesc]): Vector[CardDesc] = {
+		if (house.houseIndex != 4) cards
+		else 
+			cards.map { c ⇒
+			if (c.card == echoCard) {
+			  c.copy(enabled = false)
+			} else c
+		  }
+	  }
+	}
 
   private def initDataFalse = {env: Env ⇒
     import env._
@@ -75,7 +107,7 @@ class SB {
 
   def maikoEffect: Effect = { env: Env ⇒
     import env._
-    val malus = Lower1Attack(selected)
+    val malus = Higher1Attack(selected)
     player.slots foreach malus.temper
     otherPlayer.slots foreach malus.temper
     player addDescMod maikoAbility
@@ -84,16 +116,16 @@ class SB {
   class MaikoReaction extends Reaction {
     final override def onAdd(slot: SlotUpdate) = {
       if (slot != selected) {
-        val malus = Lower1Attack(selected.num)
+        val malus = Higher1Attack(selected.num)
         slot.attack add malus
       }
     }
     final override def onRemove(slot: SlotUpdate) = {
-      val malus = Lower1Attack(selected.num)
+      val malus = Higher1Attack(selected.num)
       slot.attack removeFirst malus
     }
     final override def cleanUp(): Unit = {
-      val malus = Lower1Attack(selected.num)
+      val malus = Higher1Attack(selected.num)
       def removeMalus(s: SlotUpdate) { s.attack removeFirst malus }
       selected.player.slots foreach removeMalus
       selected.otherPlayer.slots foreach removeMalus
@@ -117,7 +149,7 @@ class SB {
     val aligneds = getAligneds(otherPlayer.slots, selected)
     if (aligneds.nonEmpty) {
       getOwnerSelectedSlot.focus()
-      val d = Damage(2, env, isAbility = true)
+      val d = Damage(5, env, isAbility = true)
       aligneds foreach { s ⇒
         s inflict d
       }
@@ -271,8 +303,8 @@ class TrackerReaction extends Reaction with OnSummonable {
   }
 }
 
-case class Lower1Attack(id: Int) extends AttackFunc {
-  def apply(attack: Int) = math.max(0, attack - 1)
+case class Higher1Attack(id: Int) extends AttackFunc {
+  def apply(attack: Int) = math.max(0, attack + 1)
 
   def temper(s: SlotUpdate) : Unit = {
     s.attack add this

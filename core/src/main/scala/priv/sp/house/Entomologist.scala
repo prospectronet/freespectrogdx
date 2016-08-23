@@ -198,7 +198,8 @@ object Entomologist extends ChangeTarget {
     }
 
     override def onMyDeath(dead: Dead) {
-      selected.oppositeSlot inflict Damage(5, Context(selected.playerId, Some(dead.slot.card), dead.num), isAbility = true)
+      //selected.oppositeSlot inflict Damage(5, Context(selected.playerId, Some(dead.slot.card), dead.num), isAbility = true)
+	  selected.player.otherPlayer.houses.incrMana(-2, 0)
       unbridle()
     }
   }

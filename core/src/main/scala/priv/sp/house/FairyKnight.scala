@@ -14,7 +14,7 @@ class FairyKnight {
   val rusalka = new Creature("fairy.rusalka", Attack(6), 19,
                              I18n("fairy.rusalka.description"),
                              reaction = new RusalkaReaction)
-  val likho = new Creature("fairy.likho", Attack(6), 21 ,
+  val likho = new Creature("fairy.likho", Attack(7), 21 ,
     I18n("fairy.likho.description"), reaction = new LikhoReaction)
   val gory = new Creature("fairy.zmey", Attack(9), 35,
     I18n("fairy.zmey.description"), reaction = new ZGoryReaction)
@@ -125,9 +125,9 @@ class FairyKnight {
           val oppSlot = selected.player.otherPlayer.slots(d.context.selected)
           oppSlot.value foreach { s ⇒
             val l = s.life
-            oppSlot drain Damage(if (l < 11) l else (l - 10), context, isAbility = true)
+            oppSlot drain Damage(if (l < 9) l else (l - 8), context, isAbility = true)
           }
-        case _ ⇒ selected.player.houses.incrMana(2, selected.updater.randLogs.get(5))
+        case _ ⇒ //selected.player.houses.incrMana(2, selected.updater.randLogs.get(5))
       }
     }
   }
@@ -198,7 +198,8 @@ class FairyKnight {
     lazy val context = Context(selected.playerId, someGory, selected.num)
 
     override def onSummon(summoned: SummonEvent) {
-      if (summoned.card.houseIndex == 0) {
+	  import summoned._
+      if (summoned.card.houseIndex == 0 && selected.playerId == player.id) {
         val ss = summoned.player.otherPlayer.slots.filleds
         if (ss.nonEmpty) {
           ss(Random.nextInt(ss.size)) inflict Damage(6, context, isAbility = true)

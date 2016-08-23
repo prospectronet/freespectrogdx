@@ -49,18 +49,29 @@ object SoulReaper {
   data = initData,
   eventListener = Some(new CustomListener(new SoulReaperListener)),
   description = I18n("reaper.description"))
+  
+  val sentence = SoulReaper.cards(6)
 
   SoulReaper initCards Houses.basicCostFunc
 
   def shackle = { env : Env =>
     import env._
     val slot = getTargetSelectedSlot()
+
     slot.value foreach { s =>
       slot remove None
-      Warp.bridle(s.copy(attack = 0, attackSources = AttackSources(Some(0))), slot)
-      otherPlayer blockSlot selected
+      //Warp.bridle(s.copy(attack = 0, attackSources = AttackSources(Some(0))), slot)
+	  //Warp.bridle(s.copy(attack = 1, attackSources = AttackSources(Some(1))), slot)
+	  Warp.bridle(s, slot)
+  
+	  otherPlayer blockSlot selected
       player addEffect (OnTurn -> new ShackleEffect(selected))
     }
+	slot.attack add HalveAttack 
+  }
+  
+  case object HalveAttack extends AttackFunc {
+	  def apply(attack: Int) = math.max(0, math.ceil(attack / 2f).intValue)
   }
 
   class ShackleEffect(num : Int) extends Function[Env, Unit] {
@@ -70,7 +81,9 @@ object SoulReaper {
       if (oppSlot.value.isDefined) {
         env.player.updateData[SoulReaperData](data => data.copy(x = data.x + 1))
       } else if (slot.value.isDefined) {
-        slot inflict Damage(6, env, isAbility = true)
+        //slot inflict Damage(6, env, isAbility = true)
+		val x = getX(env.player)
+		slot inflict Damage(math.max(0,12-x), env, isAbility = true)
       }
     }
   }
@@ -80,29 +93,70 @@ object SoulReaper {
       slot.overridableDestroy()
       env.player.updateData[SoulReaperData](data => data.copy(x = data.x + 1))  // 1 already count in listener
     }
+    env.player addDescMod deathSentenceIncCost	
     env.player.slots foreach kill
     env.otherPlayer.slots foreach kill
+  }
+  
+  case object deathSentenceIncCost extends DescMod {
+    def apply(house: House, cards: Vector[CardDesc]): Vector[CardDesc] = {
+      if (house.houseIndex == 4){ 
+		 cards.map { c ⇒
+			if (c.card == sentence) {
+			  c.copy(cost = c.cost + 2)
+			} else c
+		  }
+	  }
+      else 
+		cards
+    }
   }
 
   def furious = { env : Env =>
     val x = getX(env.player)
-    env.player setData initData
+    //env.player setData initData
+	env.player.updateData[SoulReaperData](data => data.copy(x = math.ceil(x / 3f).toInt)) 
     env.otherPlayer inflict Damage(x + 7, env, isSpell = true)
   }
 
   def tribute = { env : Env =>
     val slot = env.getOwnerSelectedSlot()
     val life = slot.get.life
-    env.player heal math.min(life, 36)
+    env.player heal math.min(life, 28)
     slot.destroy()
+	
+	val otherPlayer = env.player.otherPlayer
+	val x = getX(env.player)
+	val houseId = (otherPlayer.getHouses.foldLeft((0, 0, 0)) {
+		case ((hidx, m, idx), h) ⇒
+			if (h.mana > m) (idx, h.mana, idx + 1) else (hidx, m, idx + 1)
+		})._1
+	otherPlayer.houses.incrMana((x / -2f).toInt, houseId)
+	
+	// обнуляет запасы душ
+	env.player setData initData
   }
 
   def onSlaughtEffect = { env : Env =>
-    env.otherPlayer.slots inflictCreatures Damage(getX(env.player), env, isSpell = true)
+	val onSlaughtDamage = math.min(getX(env.player), 14)
+    env.otherPlayer.slots inflictCreatures Damage(onSlaughtDamage, env, isSpell = true)
     env.player setData initData
   }
 
-  def eternalRage = { env : Env => env.getOwnerSelectedSlot() setData Eternal }
+  def eternalRage = { 
+	env : Env => env.getOwnerSelectedSlot() setData Eternal 
+	import env._
+	player.otherPlayer removeEffect (_.isInstanceOf[eternalRageEffect])
+	player removeEffect (_.isInstanceOf[eternalRageEffect])
+	player addEffect (OnTurn -> new eternalRageEffect(selected))
+  }
+
+
+  class eternalRageEffect(num : Int) extends Function[Env, Unit] {
+    def apply(env : Env) = {
+		env.otherPlayer inflict Damage(3, env, isAbility = true)
+    }
+  }  
 
   def pass = { env : Env =>
     val slot = env.getOwnerSelectedSlot()
@@ -137,8 +191,10 @@ object SoulReaper {
         s.value foreach { slotState =>
           if (slotState.life > 0) {
             s write Some(slotState.copy(life = 0))
-            player addEffect (OnEndTurn -> new CountDown(2, { env: Env ⇒
+            player addEffect (OnEndTurn -> new CountDown(1, { env: Env ⇒
               env.player.slots.findSlot(slotState.id) foreach (_.destroy())
+			  player.otherPlayer removeEffect (_.isInstanceOf[eternalRageEffect])
+			  player removeEffect (_.isInstanceOf[eternalRageEffect])
             }))
           }
         }

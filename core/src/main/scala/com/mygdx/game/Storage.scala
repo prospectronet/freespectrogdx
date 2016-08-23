@@ -35,12 +35,15 @@ class Storage {
     initVars()
   }
 
-  def fetchAssets(config : Config) : Unit = {
+  def fetchAssets(config : Config, overwrite : Boolean = false) : Unit = {
     val themePath = themesPath.file().getCanonicalPath + File.separator + cardTheme
-    if (! java.nio.file.Files.exists(Paths get themePath)) {
-      downloadAndUnzip(new URL(config getString "imagepack.backgrounds"), "backgrounds.zip", assetPath.file().getCanonicalPath)
-      downloadAndUnzip(new URL(config getString ("imagepack." + cardTheme)), cardTheme+".zip", themePath)
+    if (! java.nio.file.Files.exists(Paths get themePath) || overwrite) {
+      downloadAndUnzip(new URL(config getString "imagepack.backgrounds"), "backgrounds.zip", assetPath.file().getCanonicalPath, overwrite)
+      downloadAndUnzip(new URL(config getString ("imagepack." + cardTheme)), cardTheme+".zip", themePath, overwrite)
+	  println("Pics updated from " + cardTheme)
     }
+	if(overwrite)
+		initVars()
   }
 
   def persist(m : Map[String, String]) : Unit = {
@@ -57,11 +60,11 @@ class Storage {
     }
   }
 
-  private def downloadAndUnzip(url : URL, name : String, targetFolder : String) : Unit = {
+  private def downloadAndUnzip(url : URL, name : String, targetFolder : String, overwrite : Boolean = false) : Unit = {
     val tempFolder = assetPath.file().getCanonicalPath + File.separator + "tmp"
     val targetDownload = tempFolder + File.separator + name
     val targetFile = new File(targetDownload)
-    if (! targetFile.exists()) {
+    if (! targetFile.exists() || overwrite) {
       targetFile.getParentFile.mkdirs()
       println("Downloading " + url + " to " + targetDownload)
       Utils.download(url, name, targetDownload)

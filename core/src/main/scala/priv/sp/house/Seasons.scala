@@ -11,6 +11,7 @@ object Seasons {
   val initData = SeasonData(midnight = true)
   val defaultData = SeasonData()
   val lowerBasic = LowerHighCostMod(Set(0, 1, 2, 3))
+  val lowerEternalSummer = LowerHighCostMod3(Set(0, 1, 2, 3, 4))
 
   val nectarBloom = new Creature("seasons.Nectarbloom.name", Attack(2), 10,
     I18n("seasons.Nectarbloom.description"),
@@ -18,7 +19,7 @@ object Seasons {
   val ailuv = new Creature("seasons.AiluvBees.name", Attack(4), 16,
 		I18n("seasons.AiluvBees.description"),
     effects = effects(Direct -> spawnNectar))
-  val equinox = new Creature("seasons.SpiritofEquinox.name", Attack(5), 12,
+  val equinox = new Creature("seasons.SpiritofEquinox.name", Attack(5), 24,
     I18n("seasons.SpiritofEquinox.description"),
     effects = effects(Direct -> equinoxEffect))
   val solarWave = Spell("seasons.SolarWave.name",
@@ -124,7 +125,12 @@ object Seasons {
 
   def solarWaveEffect = { env : Env =>
     import env._
-    otherPlayer inflict Damage(otherPlayer.slots.getOpenSlots.size, env, isSpell = true)
+    //otherPlayer inflict Damage(otherPlayer.slots.getOpenSlots.size, env, isSpell = true)
+	
+	otherPlayer.slots foreach { s ⇒
+		otherPlayer addDescMod Destroyed(s.get.card)
+    }
+	
     player.updateData[SeasonData](_.copy(tripleDamage = true))
     player addEffectOnce (OnEndTurn -> RecoverTripeDamage)
   }
@@ -139,7 +145,9 @@ object Seasons {
   val phase2 = "summer phase 2"
   def eternalSummerEffect = { env : Env =>
     import env._
-
+	
+	player addDescMod lowerEternalSummer
+	 
     player.updateData[SeasonData](_.copy(summer = true))
     player addTransition WaitPlayer(playerId, phase2)
     player addTransition WaitPlayer(playerId, phase1)
@@ -147,6 +155,7 @@ object Seasons {
     player addEffectOnce (OnEndTurn -> { env : Env =>
       env.player removeDescMod HideSpellMod
       env.player removeDescMod HideCreatureMod
+	  env.player removeDescMod lowerEternalSummer
       player.updateData[SeasonData](_.copy(summer = false))
     })
   }
@@ -155,7 +164,7 @@ object Seasons {
     import env._
     player.slots foreach { slot =>
       slot heal 16
-      player.houses.incrMana(3, slot.get.card.houseIndex)
+      player.houses.incrMana(4, slot.get.card.houseIndex)
     }
   }
 
@@ -304,6 +313,16 @@ object Seasons {
       } else cards
     }
   }
+  
+  case class LowerHighCostMod3(indexes : Set[Int]) extends DescMod {
+    def apply(house: House, cards: Vector[CardDesc]): Vector[CardDesc] = {
+      if (indexes.contains(house.houseIndex)) {
+		cards.map { c ⇒
+			c.copy(cost = math.max(0, c.cost - 3))
+        }
+      } else cards
+    }
+  }  
 }
 
 case class SeasonData(tripleDamage : Boolean = false, midnight : Boolean = false, summer : Boolean = false)

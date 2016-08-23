@@ -12,8 +12,7 @@ trait Fire {
       effects = effects(OnTurn -> goblinBerserker)),
     new Creature("fire.wall", Attack(0), 5, I18n("fire.wall.description"),
       effects = effects(Direct -> damageCreatures(5, isAbility = true))),
-    new Creature("fire.monk", Attack(3), 13, I18n("fire.monk.description"),
-      reaction = ManaGrowthReaction(1, 0)),
+    new Creature("fire.monk", Attack(3), 13, I18n("fire.monk.description"), effects = effects(OnTurn -> addMana(1, 0))),// reaction = ManaGrowthReaction(1, 0)),
     new Creature("fire.drake", Attack(4), 18, I18n("fire.drake.description"),
       status = runFlag),
     new Creature("fire.orc", Attack(3), 16, I18n("fire.orc.description"),
@@ -36,7 +35,7 @@ trait Fire {
       (state : GameState, playerId : PlayerId) =>
         I18n.bundle.format("fire.apocalypse.description", (8 + state.players(playerId).houses(0).mana).toString),
       effects = effects(Direct -> armageddon)),
-    new Creature("fire.dragon", Attack(9), 41, I18n("fire.dragon.description"),
+    new Creature("fire.dragon", Attack(9), 40, I18n("fire.dragon.description"),
       mod = Some(new SpellMod(x ⇒ math.ceil(x * 1.5).intValue)))), houseIndex = 0)
 
   private def goblinBerserker = { env: Env ⇒

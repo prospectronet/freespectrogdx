@@ -21,11 +21,11 @@ object FaerieDruid {
     Spell("faerie.fire", I18n("faerie.fire.description"),
       effects = effects(Direct -> fire)),
 
-    new Creature("faerie.nightwing", Attack(4), 18,
+    new Creature("faerie.nightwing", Attack(1), 26,
       I18n("faerie.nightwing.description"),
       reaction = new NightwingReaction),
 
-    new Creature("faerie.ring", Attack(2), 20,
+    new Creature("faerie.ring", Attack(1), 20,
       I18n("faerie.ring.description"),
       effects = effects(OnTurn -> addMana(1, 4)),
       reaction = new RingReaction),
@@ -66,7 +66,7 @@ object FaerieDruid {
 
   def piper = { env : Env =>
     import env._
-    player.slots(selected).adjacentSlots foreach (_ heal 3)
+    player.slots(selected).adjacentSlots foreach (_ heal 4)
     focus()
   }
 
@@ -112,7 +112,7 @@ object FaerieDruid {
       if (c.card.houseIndex == 4) {
         val bonus = AttackAdd(2)
         selected.attack add bonus
-        selected.player addEffectOnce (OnEndTurn -> new RemoveAttack(bonus))
+        //selected.player addEffectOnce (OnEndTurn -> new RemoveAttack(bonus))
       }
     }
   }
@@ -172,5 +172,13 @@ case object LowerCreatureCostMod extends DescMod {
         c.copy(cost = math.max(c.cost - 1, 0))
       } else c
     }
+  }
+}
+
+case class Lower1Attack(id: Int) extends AttackFunc {
+  def apply(attack: Int) = math.max(0, attack - 1)
+
+  def temper(s: SlotUpdate) : Unit = {
+    s.attack add this
   }
 }

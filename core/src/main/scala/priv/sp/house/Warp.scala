@@ -32,11 +32,11 @@ object Warp {
 
     photographer,
 
-    new Creature("warp.schizo", Attack(5), 22,
+    new Creature("warp.schizo", Attack(5), 27,
       I18n("warp.schizo.description"),
       reaction = new SchizoReaction),
 
-    new Creature("warp.ram", Attack(6), 26,
+    new Creature("warp.ram", Attack(9), 26,
       I18n("warp.ram.description"),
       effects = effects(Direct -> ram)),
 
@@ -44,7 +44,7 @@ object Warp {
       I18n("warp.stranger.description"), effects = effects(Direct -> merge)),
 
     new Creature("warp.queen", Attack(6), 32,
-      I18n("warp.queen.description"), effects = effects(Direct -> warp))),
+      I18n("warp.queen.description"), effects = effects(Direct -> warp, OnTurn -> focus(damageCreatures(1, isAbility = true))))),
 
     eventListener = Some(OpponentListener({
       case _ : Limbo.LimboEventListener
@@ -63,7 +63,7 @@ object Warp {
     otherPlayer.slots foreach { slot ⇒
       val hidx = slot.get.card.houseIndex
       val d = Damage(
-        math.abs(houses(hidx).mana - otherPlayer.getHouses(slot.get.card.houseIndex).mana),
+        3 + math.max(0, houses(hidx).mana - otherPlayer.getHouses(slot.get.card.houseIndex).mana),
         env, isSpell = true)
       slot inflict d
     }

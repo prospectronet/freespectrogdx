@@ -60,7 +60,7 @@ object Colors {
       if (d.target.isEmpty
         && ! d.damage.isEffect
         && ! d.damage.context.card.exists(_.asCreature.runAttack.isMultiTarget)) {
-        d.damage.copy(amount = d.damage.amount + getData(selected))
+        d.damage.copy(amount = d.damage.amount + math.max(0, getData(selected) -3))
       } else d.damage
     }
   }
@@ -81,7 +81,7 @@ object Colors {
     override def onProtect(d: DamageEvent) = {
       if (d.target.isEmpty) {
         val x = getData(selected)
-        d.damage.copy(amount = math.max(0, d.damage.amount - math.max(0, x - 3)))
+        d.damage.copy(amount = math.max(0, d.damage.amount - math.max(0, x)))
       } else d.damage
     }
 
@@ -121,7 +121,7 @@ object Colors {
     val someAzure = Some(azure)
 
     final override def onProtect(d: DamageEvent) = {
-      if (d.damage.isEffect && d.damage.context.card != someAzure) {
+      if (d.damage.isEffect && d.damage.context.card != someAzure && d.damage.context.playerId != selected.playerId) {
         val x = getData(selected)
         (for {
           i <- d.target
@@ -135,7 +135,7 @@ object Colors {
 
   def azureEffect = { env : Env =>
     val x = getData(env.getOwnerSelectedSlot())
-    val damage = Damage(4, env, isAbility = true)
+    val damage = Damage(3, env, isAbility = true)
     env.player.slots foreach { slot =>
       if (slot.get.card.cost > x -2 && slot.get.card.cost < x + 2) {
         slot inflict damage
@@ -228,6 +228,13 @@ object Colors {
   def discolor = { env : Env =>
     import env._
     getOwnerSelectedSlot().destroy()
+	
+	val houseId = (player.getHouses.foldLeft((0, 0, 0)) {
+		case ((hidx, m, idx), h) ⇒
+			if (h.mana > m) (idx, h.mana, idx + 1) else (hidx, m, idx + 1)
+		})._1
+	player.houses.incrMana(2, houseId)
+		  
     player addTransition WaitPlayer(playerId, discolorPhase)
   }
 

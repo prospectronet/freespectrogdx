@@ -15,17 +15,17 @@ object Kinetician extends ChangeTarget {
 
   val Kinetician = House("kinetician", List(
 
-    new Creature("kinetician.magerunner", Attack(4), 10,
+    new Creature("kinetician.magerunner", Attack(4), 16,
       I18n("kinetician.magerunner.description"),
       effects = effects(Direct -> mage)),
 
-    new Creature("kinetician.tricker", Attack(4), 10,
+    new Creature("kinetician.tricker", Attack(3), 10,
       I18n("kinetician.tricker.description"),
-      effects = effects(OnTurn -> trick)),
+      effects = effects(OnTurn -> trick, OnTurn -> focus(trickAddMana))),
 
     Spell("kinetician.force", I18n("kinetician.force.description"),
       inputSpec = Some(SelectTargetCreature),
-      effects = effects(Direct -> focus)),
+      effects = effects(Direct -> forcefocus)),
 
     Spell("kinetician.warp", I18n("kinetician.warp.description"),
       inputSpec = Some(SelectTargetCreature),
@@ -64,7 +64,15 @@ object Kinetician extends ChangeTarget {
     import env._
     nearestSlotOpposed(selected, player, opposed = false) foreach { n ⇒
       player.slots.move(selected, n)
-    }
+    }	
+  }
+  
+  def trickAddMana = { env : Env =>
+	import env._
+  	player.value.houses.zipWithIndex.sortBy(_._1.mana).headOption.foreach {
+	  case (_, idx) ⇒
+		player.houses.incrMana(1, idx)
+	}
   }
 
   def lone = { env : Env =>
@@ -94,10 +102,11 @@ object Kinetician extends ChangeTarget {
     val slotState = slot.get
     if (slotState.life > slotState.card.cost) {
       slot write Some(slotState.copy(life = slotState.card.cost))
+	  slot.stun()
     }
   }
   val focusBonus = AttackAdd(1)
-  def focus = { env : Env =>
+  def forcefocus = { env : Env =>
     env.player.slots foreach (_.attack add focusBonus)
     changeTarget(env)
     env.player addEffect (OnEndTurn -> oneTimePlayerEffect { env : Env =>

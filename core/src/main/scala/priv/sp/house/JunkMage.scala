@@ -15,13 +15,13 @@ class JunkMage {
   import GameCardEffect._
 
   private val trash = new Creature("junk.trash", Attack(2), 11)
-  private val trashCyborg = new Creature("junk.cyborg", Attack(3), 30, I18n("junk.cyborg.description"),
+  private val trashCyborg = new Creature("junk.cyborg", Attack(4), 27, I18n("junk.cyborg.description"),
     effects = effects(Direct -> spawnTrash, OnTurn -> gatherTrash))
   private val jf = new Creature("junk.fortune", Attack(3), 15, I18n("junk.fortune.description"),
     reaction = new JFReaction, effects = effects(OnEndTurn -> resetProtect), data = java.lang.Boolean.FALSE)
 
   val Junk: House = House("junk", List(
-    new Creature("junk.screamer", AttackSources(Some(2), Vector(ScreamerAttackSource)), 14, I18n("junk.screamer.description"), reaction = new ScreamerReaction),
+    new Creature("junk.screamer", AttackSources(Some(2), Vector(ScreamerAttackSource)), 12, I18n("junk.screamer.description"), reaction = new ScreamerReaction),
     Spell("junk.poison", I18n("junk.poison.description"),
       inputSpec = Some(SelectOwnerCreature),
       effects = effects(Direct -> poisonFlower)),
@@ -105,10 +105,16 @@ class JunkMage {
 
   private class ScreamerReaction extends Reaction {
     final override def onAdd(slot: SlotUpdate) = {
-      if (slot.get.card == screamer) {
-        setScreamerDirty(slot.slots)
-      }
+		if (slot.get.card == screamer) {
+			setScreamerDirty(slot.slots)
+			
+			val slotState = slot.get
+			slot write Some(slotState.copy(life = slotState.life + 2))
+		}
     }
+	
+
+	
     final override def onMyDeath(dead: Dead) = setScreamerDirty(dead.player.slots)
     def setScreamerDirty(slots: SlotsUpdate) {
       slots.foreach { s ⇒
@@ -155,7 +161,7 @@ class JFReaction extends Reaction {
       && d.damage.amount > 0) {
       player.updater.focus(selected.num, player.id, blocking = false)
       selected setData java.lang.Boolean.TRUE
-      d.damage.copy(amount = math.max(0, d.damage.amount - 4))
+      d.damage.copy(amount = math.max(0, d.damage.amount - 6))
     } else d.damage
   }
 }

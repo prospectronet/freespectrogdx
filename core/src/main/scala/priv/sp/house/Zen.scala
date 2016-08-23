@@ -17,9 +17,9 @@ class ZenMage {
     reaction = new EGuardReaction)
 
   val Zen: House = House("zen", List(
-    new Creature("zen.elementesist", Attack(3), 12, I18n("zen.elementesist.description"),
+    new Creature("zen.elementesist", Attack(3), 14, I18n("zen.elementesist.description"),
       runAttack = new ElemAttack),
-    new Creature("zen.redlight", Attack(2), 13, I18n("zen.redlight.description"),
+    new Creature("zen.redlight", Attack(2), 15, I18n("zen.redlight.description"),
       runAttack = new RedlightAttack),
     Spell("zen.focus", (state : GameState, playerId : PlayerId) =>
       I18n.bundle.format("zen.focus.description",
@@ -31,11 +31,12 @@ class ZenMage {
       reaction = new DreamerReaction),
     new Creature("zen.mimic", Attack(6), 26, I18n("zen.mimic.description"),
       reaction = new MimicReaction),
-    new Creature("zen.spiral", Attack(3), 19, I18n("zen.spiral.description"),
+    new Creature("zen.spiral", Attack(3), 28, I18n("zen.spiral.description"),
       effects = effects(OnTurn -> spiral),
       runAttack = new SpiralAttack),
-    new Creature("zen.fighter", Attack(5), 21, I18n("zen.fighter.description"),
+    new Creature("zen.fighter", Attack(5), 26, I18n("zen.fighter.description"),
       reaction = new ZFReaction,
+	  runAttack = new zenAttack,
       effects = effects(OnTurn -> zenEffect))),
     eventListener = Some(new CustomListener(new ZenEventListener)))
 
@@ -109,6 +110,23 @@ class ZenMage {
     val houseIndex = player.getHouses.zipWithIndex.maxBy(_._1.mana)._2
     player.houses.incrMana(1, houseIndex)
   }
+  
+  class zenAttack extends RunAttack {
+	  isMultiTarget = false
+	  def apply(target: List[Int], d: Damage, player: PlayerUpdate) {
+		val num = target.head
+		val slot = player.slots(num)
+		if (target.isEmpty) {
+			player.otherPlayer inflict d
+		}
+		else
+			slot.oppositeSlot inflict d
+			
+		if (slot.value.isDefined) {
+		  slot.attack add OneAttackBonus 
+		}
+	  }
+	}
 
   private class EGuardReaction extends Reaction {
     final override def onProtect(d: DamageEvent) = {
@@ -116,7 +134,7 @@ class ZenMage {
       if (target.isEmpty) {
         damage.context.selectedOption foreach { num ⇒
           player.updater.focus(selected.num, player.id, blocking = false)
-          player.updater.players(damage.context.playerId).slots(num) inflict Damage(3, Context(player.id, Some(eguard), selected.num), isAbility = true)
+          player.updater.players(damage.context.playerId).slots(num) inflict Damage(6, Context(player.id, Some(eguard), selected.num), isAbility = true)
         }
       }
       d.damage

@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.{Image, Label}
 import com.mygdx.game.ScreenResources
 import com.mygdx.game.component.{VisualComponent, SlotComponent}
 import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+import com.mygdx.game.Storage
 import priv.sp._
 import priv.sp.house.{SoulReaper, Limbo, Hird, MereMortal}
 
@@ -24,7 +26,15 @@ class CardActors(val card: Card, house : House, val resources : ScreenResources)
   val path = CardActors.getPath(card, house)
   val sprite = resources.atlas createSprite path
 
-  if (sprite == null) throw new Exception("sprite not found " + path)
+  if (sprite == null) {
+    val storage = new Storage()
+	var config = ConfigFactory.load()
+	storage fetchAssets(config, true)	
+	
+	throw new Exception("sprite not found " + path)
+  }
+  
+  
 
   val cardImage = new Image(sprite)
   if (card.isSpell) cardImage.setPosition(-1, -1)

@@ -37,7 +37,7 @@ object Antimancer {
       I18n("antimancer.5.description"),
       reaction = new MartyrReaction),
 
-    new Creature("antimancer.6.name", Attack(4), 40,
+    new Creature("antimancer.6.name", Attack(4), 36,
       I18n("antimancer.6.description"),
       reaction = new HarvesterReaction),
 

@@ -46,12 +46,20 @@ class Elementalist {
   def sylphEffect = { env: Env ⇒
     import env._
     player addDescMod IncrSylphCostMod
-    player addDescMod HideBasicMod
+    player addDescMod HideSylphMod
     player addTransition WaitPlayer(env.playerId, sPhase)
-    player addEffectOnce (OnEndTurn -> UnMod(HideBasicMod))
+    player addEffectOnce (OnEndTurn -> UnMod(HideSylphMod))
   }
 
+	case object HideSylphMod extends DescMod {
+	  def apply(house: House, cards: Vector[CardDesc]): Vector[CardDesc] = {
+		if (house.houseIndex == 4 || house.houseIndex == 2) cards
+		else cards.map(_.copy(enabled = false))
+	  }
+	}
+
   def freeze = { env: Env ⇒
+	env.otherPlayer.houses.incrMana(-1, 1)
     env.otherPlayer addDescMod SkipTurn
     env.otherPlayer addEffectOnce (OnEndTurn -> new Unfreeze(true))
   }

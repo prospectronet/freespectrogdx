@@ -1,0 +1,331 @@
+
+images.pack.png
+size: 128,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+particle
+  rotate: false
+  xy: 2, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+smoke
+  rotate: false
+  xy: 2, 36
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+thin
+  rotate: false
+  xy: 68, 68
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+
+images.pack2.png
+size: 1024,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+cards/holy/Angel
+  rotate: false
+  xy: 293, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/holy/ArchAngel
+  rotate: false
+  xy: 375, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/holy/Divine Intervention
+  rotate: false
+  xy: 2, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/holy/Divine Justice
+  rotate: false
+  xy: 99, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/holy/Holy Guard
+  rotate: false
+  xy: 457, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/holy/Monk
+  rotate: false
+  xy: 539, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/holy/Paladin
+  rotate: false
+  xy: 621, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/holy/Wrath of God
+  rotate: false
+  xy: 196, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+
+images.pack3.png
+size: 1024,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+cards/illusion/Hypnosis
+  rotate: false
+  xy: 2, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/illusion/Hypnotist
+  rotate: false
+  xy: 196, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/illusion/Madness
+  rotate: false
+  xy: 99, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/illusion/Oracle
+  rotate: false
+  xy: 278, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/illusion/Phantom Warrior
+  rotate: false
+  xy: 360, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/illusion/Spectral Assassin
+  rotate: false
+  xy: 442, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/illusion/Spectral Mage
+  rotate: false
+  xy: 524, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/illusion/Wall of Reflection
+  rotate: false
+  xy: 606, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+
+images.pack4.png
+size: 1024,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+cards/spirit/Angel
+  rotate: false
+  xy: 293, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/spirit/Angel of War
+  rotate: false
+  xy: 375, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/spirit/Crusader
+  rotate: false
+  xy: 457, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/spirit/Divine Justice
+  rotate: false
+  xy: 2, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/spirit/Divine Meddling
+  rotate: false
+  xy: 99, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/spirit/Holy Avenger
+  rotate: false
+  xy: 539, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+cards/spirit/Rage of God
+  rotate: false
+  xy: 196, 2
+  size: 95, 103
+  orig: 95, 103
+  offset: 0, 0
+  index: -1
+cards/spirit/Templar
+  rotate: false
+  xy: 621, 25
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+
+images.pack5.png
+size: 1024,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+combat/blank
+  rotate: false
+  xy: 2, 153
+  size: 534, 300
+  orig: 534, 300
+  offset: 0, 0
+  index: -1
+combat/crystalize
+  rotate: false
+  xy: 212, 71
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+combat/death
+  rotate: false
+  xy: 116, 16
+  size: 30, 29
+  orig: 30, 29
+  offset: 0, 0
+  index: -1
+combat/eternalrage
+  rotate: false
+  xy: 796, 212
+  size: 30, 29
+  orig: 30, 29
+  offset: 0, 0
+  index: -1
+combat/glow
+  rotate: false
+  xy: 796, 347
+  size: 96, 106
+  orig: 96, 106
+  offset: 0, 0
+  index: -1
+combat/hird
+  rotate: false
+  xy: 538, 168
+  size: 20, 27
+  orig: 20, 27
+  offset: 0, 0
+  index: -1
+combat/lifebar
+  rotate: false
+  xy: 2, 2
+  size: 66, 7
+  orig: 66, 7
+  offset: 0, 0
+  index: -1
+combat/limbo
+  rotate: false
+  xy: 294, 71
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+combat/mortal
+  rotate: false
+  xy: 376, 71
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+combat/parts
+  rotate: false
+  xy: 538, 197
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+combat/raka
+  rotate: false
+  xy: 796, 243
+  size: 90, 102
+  orig: 90, 102
+  offset: 0, 0
+  index: -1
+combat/rakaSpell
+  rotate: false
+  xy: 116, 47
+  size: 94, 104
+  orig: 94, 104
+  offset: 0, 0
+  index: -1
+combat/sand
+  rotate: false
+  xy: 458, 71
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+combat/shield
+  rotate: false
+  xy: 976, 427
+  size: 23, 26
+  orig: 23, 26
+  offset: 0, 0
+  index: -1
+combat/slot
+  rotate: false
+  xy: 2, 11
+  size: 112, 140
+  orig: 112, 140
+  offset: 0, 0
+  index: -1
+combat/soul
+  rotate: false
+  xy: 894, 360
+  size: 80, 93
+  orig: 80, 93
+  offset: 0, 0
+  index: -1

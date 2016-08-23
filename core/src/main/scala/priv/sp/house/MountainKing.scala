@@ -121,7 +121,7 @@ class MountainKing {
       oppSlots.get(slot.num) match {
         case Some(s) if s.card == soldier && s.data == Hird ⇒
           val nbSoldier = oppSlots.count(_._2.card == soldier)
-          math.max(0, attack - nbSoldier)
+          math.max(1, attack - nbSoldier)
         case _ ⇒ attack
       }
     }

@@ -59,7 +59,7 @@ object HighPriest {
     reaction = new AmitReaction)
 
   val hpSet = List[Card](
-    new Creature("highpriest.Ancientcrocodile", Attack(8), 15, 
+    new Creature("highpriest.Ancientcrocodile", Attack(9), 15, 
 	  I18n("highpriest.Ancientcrocodile.description"),
       runAttack = new CrocodileAttack),
     new Creature("highpriest.Serpopard", Attack(4), 18,
@@ -86,7 +86,7 @@ object HighPriest {
     new Creature("highpriest.Sacredscarab", Attack(3), 11,
       I18n("highpriest.Sacredscarab.description"),
       reaction = new ScarabReaction),
-    new Creature("highpriest.sunpriest", Attack(2), 16, 
+    new Creature("highpriest.sunpriest", Attack(1), 16, 
 	  I18n("highpriest.sunpriest.description"),
       runAttack = new SunPriestAttack),
     apis,

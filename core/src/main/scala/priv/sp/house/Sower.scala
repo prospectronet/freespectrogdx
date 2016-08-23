@@ -23,7 +23,7 @@ class Sower {
     new Creature("sower.sundew", Attack(6), 23, I18n("sower.sundew.description"), runAttack = new HealingAttack),
     new Creature("sower.predator", Attack(5), 33, I18n("sower.predator.description"), runAttack = new PredatorPlantAttack),
     new Creature("sower.drake", Attack(4), 52, I18n("sower.drake.description"), reaction = new ForestDrakeReaction),
-    new Creature("sower.flower", Attack(0), 35, I18n("sower.flower.description"), effects = effects(OnTurn -> fieryFlower, Direct -> { env: Env ⇒
+    new Creature("sower.flower", Attack(0), 29, I18n("sower.flower.description"), effects = effects(OnTurn -> fieryFlower, Direct -> { env: Env ⇒
       env.otherPlayer.inflict(Damage(env.player.getHouses(0).mana, env, isAbility = true))
     }))))
 

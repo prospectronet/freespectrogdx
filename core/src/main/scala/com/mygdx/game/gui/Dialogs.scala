@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent
 import com.mygdx.game.{ScreenResources, Storage}
 import priv.sp._
 import priv.util.GuiUtils._
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object Dialogs {
   def center(dialog : Dialog) : Unit = {
@@ -40,7 +42,7 @@ class GameSettings(resources : GameResources, screenResources : ScreenResources)
     val choiceCheckBoxes : Map[String, CheckBox] = specials.map(_.label)
       .map { choice =>
         val checkbox = new CheckBox(choice, screenResources.skin2)
-        table add(checkbox).left()
+        table.add(checkbox).left
         n += 1
         if (n % 2 == 0) table.row()
         (choice, checkbox)
@@ -48,11 +50,11 @@ class GameSettings(resources : GameResources, screenResources : ScreenResources)
     table.row()
 
     val group = column(priv.util.GuiUtils.row(
-      createBtn("all", self) { choiceCheckBoxes foreach (_._2.setChecked(true)) },
-      createBtn("clear", self) { choiceCheckBoxes foreach (_._2.setChecked(false)) },
-      createBtn("sinist", self) { select(resources.sp.houses.sinist) },
-      createBtn("others", self) { select(resources.sp.houses.others) },
-      createBtn("bs", self) { select(resources.sp.houses.bs) }),
+      createBtn("All", self) { choiceCheckBoxes foreach (_._2.setChecked(true)) },
+      createBtn("Clear", self) { choiceCheckBoxes foreach (_._2.setChecked(false)) },
+      createBtn("Sinist", self) { select(resources.sp.houses.sinist) },
+      createBtn("Others", self) { select(resources.sp.houses.others) },
+      createBtn("BS", self) { select(resources.sp.houses.bs) }),
       table)
 
     resources.playerChoices(id) foreach (h => choiceCheckBoxes(h.label).setChecked(true))
@@ -124,7 +126,12 @@ class HouseDescription (house : House, gameState : => GameState, playerId : Play
         table.row()
       }
     } catch {
-      case e : Exception => throw new Exception("Failed loading " + path, e)
+      case e : Exception => 
+	    val storage = new Storage()
+		var config = ConfigFactory.load()
+		storage fetchAssets(config, true)	
+		
+		throw new Exception("Failed loading " + path, e)
     }
   }
 

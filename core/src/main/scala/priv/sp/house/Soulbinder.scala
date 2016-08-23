@@ -11,14 +11,14 @@ object Soulbinder {
 
   val initState = BoundSouls()
 
-  val soulSheppard = new Creature("soulbinder.sheppard", Attack(4).add(new SheppardAttack), 39,
+  val soulSheppard = new Creature("soulbinder.sheppard", Attack(4).add(new SheppardAttack), 43,
     I18n("soulbinder.sheppard.description"),
     inputSpec = Some(SelectOwner(selectBoundSoul)),
     effects   = effects(OnTurn -> sheppard))
 
   val Soulbinder = House("soulbinder", List(
 
-    new Creature("soulbinder.tethered", Attack(4), 17,
+    new Creature("soulbinder.tethered", Attack(4), 22,
       I18n("soulbinder.tethered.description"),
       inputSpec = Some(SelectOwner(selectBoundSoul)),
       reaction = new TetheredReaction),
@@ -128,14 +128,16 @@ object Soulbinder {
 
   def passage = { env : Env =>
     val total = getTotalSouls(env)
-    env.player heal (2 * total)
-    env.otherPlayer inflict Damage(2 * total, env, isAbility = true)
+    env.player heal (4 * total)
+    env.otherPlayer inflict Damage(4 * total, env, isAbility = true)
   }
 
   def release : Effect = { env : Env =>
-    import env._
-    val x = 3 * getTotalSouls(env)
+    import env._    
+	val s = getTotalSouls(env)
+	val x = 3 * s
 
+	player.houses.incrMana(s, 4)
     player heal x
     player.slots healCreatures x
     player setData initState
@@ -150,6 +152,7 @@ object Soulbinder {
   def summon = { env : Env =>
     addSoul(env.player, env.selected)
     env.player.houses.incrMana(1, 0, 1, 2, 3)
+	env.player.heal(5)
   }
 
   def tree = { env : Env =>

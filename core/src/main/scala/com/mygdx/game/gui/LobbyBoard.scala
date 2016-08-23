@@ -11,8 +11,8 @@ class LobbyBoard(screens : Screens) {
   val title          = new Label(I18n("lobby.message"),screens.screenResources.skin2)
   val buttonPanel    = new ButtonPanel(screens.screenResources.skin2)
   val newGameButton  = buttonPanel.getButton(I18n("button.singlegame"))
-  val settingsButton = buttonPanel.getButton(I18n("button.settings"))
   val netPanel       = new NetPanel(screens, buttonPanel)
+  val settingsButton = buttonPanel.getButton(I18n("button.settings"))
   val panel          = column(
     title, buttonPanel.panel, netPanel.panel)
 

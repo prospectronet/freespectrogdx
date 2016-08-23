@@ -16,9 +16,9 @@ trait Water {
       })),
     new Creature("water.apostate", Attack(3), 10, I18n("water.apostate.description"), effects = effects(Direct -> focus(addMana(2, 0)))),
     new Creature("water.golem", Attack(4), 12, I18n("water.golem.description"), reaction = new GolemReaction),
-    new Creature("water.elder", Attack(3), 16, I18n("water.elder.description"), reaction = ManaGrowthReaction(1, 2)),
+    new Creature("water.elder", Attack(3), 16, I18n("water.elder.description"), effects = effects(OnTurn -> addMana(1, 2))), //, reaction = ManaGrowthReaction(1, 2)),
     new Creature("water.guard", Attack(3), 20, I18n("water.guard.description"), reaction = new IceguardReaction),
-    new Creature("water.turtle", Attack(5), 17, I18n("water.turtle.description"), reaction = new TurtleReaction),
+    new Creature("water.turtle", Attack(5), 16, I18n("water.turtle.description"), reaction = new TurtleReaction),
     Spell("water.shower", I18n("water.shower.description"), effects = effects(Direct -> massDamage(15, isSpell =true), Direct -> { env: Env ⇒
       env.otherPlayer.houses.incrMana(-1, 0, 1, 2, 3, 4)
     })),

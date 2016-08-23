@@ -10,6 +10,8 @@ import com.mygdx.game.gui.{GameSettings, LobbyBoard}
 import priv.sp.GameResources
 import priv.util.GuiUtils._
 import priv.sp._
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 
 // common resources of the screens
@@ -125,7 +127,7 @@ class LobbyScreen(screens : Screens) extends ScreenAdapter {
   }
   board.settingsButton addListener onClick {
     screenResources.stage addActor new GameSettings(gameResources, screenResources)
-  }
+  }  
 
   def select() : Unit = {
     screenResources.clear()

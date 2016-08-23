@@ -18,7 +18,7 @@ object MasterOfWind {
 	reaction = new SpiritThunderReaction, effects = effects(OnTurn -> addMana(1, 4)))
 
   val Wind: House = House("wind", List(
-    new Creature("wind.WingedWarrior.name", Attack(4), 9, 
+    new Creature("wind.WingedWarrior.name", Attack(4), 8, 
 		I18n("wind.WingedWarrior.description"),
 		effects = effects(Direct -> winge)),
     Spell("wind.Simoom.name", 

@@ -26,7 +26,7 @@ object Darksider {
     new Creature("darksider.faceless.name", Attack(7), 34,
       I18n("darksider.faceless.description"),
       effects = effects(Direct -> horror)),
-    new Creature("darksider.lake.name", Attack(0), 41,
+    new Creature("darksider.lake.name", Attack(0), 51,
       I18n("darksider.lake.description"), reaction = new LakeReaction, data = LakeData()),
     warlock,
     new Creature("darksider.dragon.name", Attack(8), 39,

@@ -32,7 +32,7 @@ trait Air {
         I18n.bundle.format("air.lightnin.description", (5+state.players(playerId).houses(2).mana).toString),
       effects = effects(Direct -> { env: Env ⇒ env.otherPlayer inflict Damage(5 + env.getMana(2), env, isSpell = true) })),
 
-    new Creature("air.phoenix", Attack(6), 18, I18n("air.phoenix.description"), reaction = new PhoenixReaction),
+    new Creature("air.phoenix", Attack(7), 16, I18n("air.phoenix.description"), reaction = new PhoenixReaction),
 
     Spell("air.chain", I18n("air.chain.description"), effects = effects(Direct -> damageCreatures(9, isSpell = true), Direct -> damage(9, isSpell = true))),
 

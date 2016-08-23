@@ -13,7 +13,9 @@ object DarkPriest {
   val shadowPriest = new Creature("darkpriest.ShadowOfPriest.name", Attack(3), 13, 
 	I18n("darkpriest.ShadowOfPriest.description"), 
 	effects = effects(OnTurn -> shadowHeal))
-  val heretic = new Creature("darkpriest.Heretic.name", Attack(6), 20, "")
+  val heretic = new Creature("darkpriest.Heretic.name", Attack(6), 16, 
+    I18n("darkpriest.Heretic.description"),
+	effects = effects(OnTurn -> focus(heal(1))))
   val blackAngel = new Creature("darkpriest.BlackAngel.name", Attack(8), 25, 
 	I18n("darkpriest.BlackAngel.description"), 
 	runAttack = new BlackAngelAttack)
@@ -22,7 +24,7 @@ object DarkPriest {
     new Creature("darkpriest.Ghost.name", Attack(5), 16, 
 		I18n("darkpriest.Ghost.description"), 
 		reaction = new GhostReaction, effects = effects(Direct -> ghostHeal)),
-    new Creature("darkpriest.Occultist.name", Attack(4), 20,   			
+    new Creature("darkpriest.Occultist.name", Attack(4), 22,   			
 		I18n("darkpriest.Occultist.description"), 
 		effects = effects(Direct -> occult)),
     Spell("darkpriest.BlackMass.name", (state : GameState, playerId : PlayerId) =>
@@ -31,10 +33,10 @@ object DarkPriest {
       ,
       inputSpec = Some(SelectOwnerCreature),
       effects = effects(Direct -> blackMass)),
-    new Creature("darkpriest.EnergyVampire.name", Attack(3), 23, 
+    new Creature("darkpriest.EnergyVampire.name", Attack(3), 20, 
 		I18n("darkpriest.EnergyVampire.description"), 
 		effects = effects(OnTurn -> evampire)),
-    new Creature("darkpriest.BlackMonk.name", Attack(4), 25, 
+    new Creature("darkpriest.BlackMonk.name", Attack(4), 21, 
 		I18n("darkpriest.BlackMonk.description"), 
 		reaction = new BlackMonkReaction),
     new Creature("darkpriest.Betrayer.name", Attack(7), 38, 
@@ -109,7 +111,7 @@ object DarkPriest {
     otherPlayer.slots inflictCreatures Damage(x, env, isSpell = true)
   }
   def getBlackMassX(slots : PlayerState.SlotsType) = {
-    4 * (slots.values.map { s ⇒ s.card.houseId }(collection.breakOut) : List[Int]).distinct.size
+    3 * (slots.values.map { s ⇒ s.card.houseId }(collection.breakOut) : List[Int]).distinct.size
   }
   def occult: Effect = { env: Env ⇒
     import env._

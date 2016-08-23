@@ -24,7 +24,7 @@ class Vampire {
 
     new Creature("vampires.noctule", Attack(5), 17, I18n("vampires.noctule.description"), runAttack = new NoctuleAttack),
 
-    new Creature("vampires.ghoul", Attack(4), 22, I18n("vampires.ghoul.description"), runAttack = new GhoulAttack),
+    new Creature("vampires.ghoul", Attack(4), 24, I18n("vampires.ghoul.description"), runAttack = new GhoulAttack),
 
     acolyte,
 
@@ -42,7 +42,7 @@ class Vampire {
   val aristocrat = Vampire.cards(6).asCreature
   Vampire initCards Houses.basicCostFunc
 
-  val neophyte = new Creature("vampires.neophyte", Attack(5), 14, I18n("vampires.neophyte.description"), runAttack = new NeophyteAttack)
+  val neophyte = new Creature("vampires.neophyte", Attack(5), 10, I18n("vampires.neophyte.description"), runAttack = new NeophyteAttack)
 
   neophyte.houseIndex = Vampire.houseIndex
   neophyte.houseId = Vampire.houseId
@@ -67,11 +67,12 @@ class Vampire {
     slot.destroy()
     slot.filledAdjacents foreach { s ⇒
       val card = s.get.card
-      if (card.cost < 9 && card.runAttack != MultiTargetAttack) {
+      if (card.cost < 10 && card.runAttack != MultiTargetAttack) {
         val bonus = AttackAdd(attack)
         s.attack add bonus
       }
     }
+	player.houses.incrMana(3, 4)
   }
 
   private def aristo = { env: Env ⇒
@@ -104,9 +105,14 @@ class Vampire {
   }
 
   class AcolyteReaction extends Reaction {
-    def onDamaged(slot : SlotUpdate, d: Damage) = {
+    def onDamaged(slot : SlotUpdate, d: Damage, p: PlayerUpdate) = {
       if (slot.value.isDefined && d.amount > 5) {
         slot inflict Damage(4, Context(selected.playerId, Some(acolyte), selected.num), isAbility = true)
+		
+		// приносит хозяину 1 ману его стихии.
+		//slot.value foreach { s =>
+		//	p.houses.incrMana(1, s.card.houseIndex)
+        //}
         true
       } else false
     }
@@ -114,10 +120,10 @@ class Vampire {
 
   class VampireEventListener extends HouseEventListener with AnyDeathEventListener {
     // broadcast enemy damage
-    def onDamaged(card: Creature, d: Damage, slot: SlotUpdate) {
+    def onDamaged(card: Creature, d: Damage, slot: SlotUpdate, p: PlayerUpdate) {
       player.slots foreach { s ⇒
         s.get.reaction match {
-          case r : AcolyteReaction if r.onDamaged(slot, d) => s.focus(blocking = false)
+          case r : AcolyteReaction if r.onDamaged(slot, d, p) => s.focus(blocking = false)
           case _ =>
         }
       }
@@ -127,7 +133,7 @@ class Vampire {
       super.init(p)
       p.otherPlayer.slots.slots foreach { slot =>
         slot.onDamage = (FuncDecorators decorate slot.onDamage) after { case (slotState, d) =>
-          onDamaged(slotState.card, d, slot)
+          onDamaged(slotState.card, d, slot, p)
         }
       }
     }

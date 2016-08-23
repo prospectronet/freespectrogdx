@@ -1,0 +1,3 @@
+gradlew desktop:dist
+echo copy...
+d2.bat

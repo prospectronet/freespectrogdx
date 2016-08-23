@@ -15,7 +15,7 @@ object Shaman {
   val wolf = new Creature("shaman.ghost", AttackSources(Some(2)).add(new WolfAttackBonus), 18, reaction = new WolfReaction, runAttack = new WolfAttack,
     effects = effects(Direct -> wolfSummoned))
 
-  val shadow = new Creature("shaman.shadow", AttackSources(Some(4)).add(new ShadowAttack), 45, I18n("shaman.shadow.description"),
+  val shadow = new Creature("shaman.shadow", AttackSources(Some(4)).add(new ShadowAttack), 60, I18n("shaman.shadow.description"),
     reaction = new WolfShadowReaction,
     effects = effects(Direct -> shade),
     runAttack = new WolfAttack)

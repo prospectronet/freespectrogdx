@@ -98,6 +98,9 @@ class Houses
   val warp = Warp
   val wind = MasterOfWind
   val zenMage = new ZenMage
+  val spirit = new Spirit
+  val holy = new Holy
+  val illusion = new Illusion
   //  val test = new TestMage
 
   val base = List(Fire, Water, Air, Earth)
@@ -106,7 +109,7 @@ class Houses
     shaman.Shaman, sower.Sower, vampire.Vampire, wind.Wind)
   val others = List(antimancer.Antimancer, colors.Colors, dreamweaver.Dreamweaver, entomologist.Entomologist,
     faerieDruid.FaerieDruid, limbo.Limbo, seasons.Seasons, soulBinder.Soulbinder, soulReaper.SoulReaper)
-  val olds = List(dudeMancer.Dude, trooper.Trooper)
+  val olds = List(dudeMancer.Dude, trooper.Trooper, spirit.Spirit, holy.Holy, illusion.Illusion)
   val bs = List(junkMage.Junk, lostChurch.LostChurch, sb.SB, warp.Warp, zenMage.Zen)
   val special = (sinist ++ others).sortBy(_.name) ++ olds ++ bs
 
