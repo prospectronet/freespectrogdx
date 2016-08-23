@@ -93,6 +93,7 @@ class ScreenResources(val storage : Storage) extends GraphicResourceBase {
   }
 
   def dispose(): Unit ={
+    disconnectIfNeeded()
     effectResources.shaders.dispose()
     effectResources.particles.dispose()
     stage.dispose()
